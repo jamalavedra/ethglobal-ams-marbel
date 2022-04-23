@@ -1,0 +1,12 @@
+{
+  "name": "Marble",
+  "short_name": "Marble",
+  "description": "Decentralized, and permissionless social media app",
+  "theme_color": "#ffffff",
+  "background_color": "#ffffff",
+  "display": "standalone",
+  "scope": "/",
+  "start_url": "/?utm_source=homescreen&utm_medium=shortcut",
+  "iconPath": "/favicon.svg",
+  "splash_pages": null
+}
