@@ -7,10 +7,12 @@ import { Card } from '@components/UI/Card'
 import { ErrorMessage } from '@components/UI/ErrorMessage'
 import { Spinner } from '@components/UI/Spinner'
 import AppContext from '@components/utils/AppContext'
-import { LensterAttachment } from '@generated/lenstertypes'
-import { CreatePostBroadcastItemResult, EnabledModule } from '@generated/types'
-import { IGif } from '@giphy/js-types'
-import { PencilAltIcon } from '@heroicons/react/outline'
+import { LensterAttachment, LensterPost } from '@generated/lenstertypes'
+import {
+  CreateCommentBroadcastItemResult,
+  EnabledModule
+} from '@generated/types'
+import { ChatAlt2Icon, PencilAltIcon } from '@heroicons/react/outline'
 import consoleLog from '@lib/consoleLog'
 import {
   defaultFeeData,
@@ -21,7 +23,7 @@ import {
 import omit from '@lib/omit'
 import splitSignature from '@lib/splitSignature'
 import uploadToIPFS from '@lib/uploadToIPFS'
-import { Dispatch, FC, useContext, useState } from 'react'
+import { FC, useContext, useState } from 'react'
 import toast from 'react-hot-toast'
 import {
   CHAIN_ID,
@@ -39,14 +41,14 @@ import {
 } from 'wagmi'
 import { MentionTextArea } from '@components/UI/MentionTextArea'
 
-export const CREATE_POST_TYPED_DATA_MUTATION = gql`
-  mutation CreatePostTypedData($request: CreatePublicPostRequest!) {
-    createPostTypedData(request: $request) {
+const CREATE_COMMENT_TYPED_DATA_MUTATION = gql`
+  mutation CreateCommentTypedData($request: CreatePublicCommentRequest!) {
+    createCommentTypedData(request: $request) {
       id
       expiresAt
       typedData {
         types {
-          PostWithSig {
+          CommentWithSig {
             name
             type
           }
@@ -61,6 +63,8 @@ export const CREATE_POST_TYPED_DATA_MUTATION = gql`
           nonce
           deadline
           profileId
+          profileIdPointed
+          pubIdPointed
           contentURI
           collectModule
           collectModuleData
@@ -73,21 +77,23 @@ export const CREATE_POST_TYPED_DATA_MUTATION = gql`
 `
 
 interface Props {
-  refetch?: any
-  setShowModal?: Dispatch<boolean>
-  hideCard?: boolean
+  refetch: any
+  post: LensterPost
+  type: 'comment' | 'community post'
 }
 
-const NewPost: FC<Props> = ({ refetch, setShowModal, hideCard = false }) => {
-  const [postContent, setPostContent] = useState<string>('')
-  const [postContentError, setPostContentError] = useState<string>('')
+const NewComment: FC<Props> = ({ refetch, post, type }) => {
+  const [commentContent, setCommentContent] = useState<string>('')
+  const [commentContentLink, setCommentContentLink] = useState<string>('')
+
+  const [commentContentError, setCommentContentError] = useState<string>('')
+  const { currentUser } = useContext(AppContext)
   const [selectedModule, setSelectedModule] =
     useState<EnabledModule>(defaultModuleData)
   const [onlyFollowers, setOnlyFollowers] = useState<boolean>(false)
   const [feeData, setFeeData] = useState<FEE_DATA_TYPE>(defaultFeeData)
   const [isUploading, setIsUploading] = useState<boolean>(false)
   const [attachments, setAttachments] = useState<LensterAttachment[]>([])
-  const { currentUser } = useContext(AppContext)
   const { activeChain } = useNetwork()
   const { data: account } = useAccount()
   const { isLoading: signLoading, signTypedDataAsync } = useSignTypedData({
@@ -105,10 +111,10 @@ const NewPost: FC<Props> = ({ refetch, setShowModal, hideCard = false }) => {
       addressOrName: LENSHUB_PROXY,
       contractInterface: LensHubProxy
     },
-    'postWithSig',
+    'commentWithSig',
     {
       onSuccess() {
-        setPostContent('')
+        setCommentContent('')
         setAttachments([])
         setSelectedModule(defaultModuleData)
         setFeeData(defaultFeeData)
@@ -119,18 +125,20 @@ const NewPost: FC<Props> = ({ refetch, setShowModal, hideCard = false }) => {
     }
   )
 
-  const [createPostTypedData, { loading: typedDataLoading }] = useMutation(
-    CREATE_POST_TYPED_DATA_MUTATION,
+  const [createCommentTypedData, { loading: typedDataLoading }] = useMutation(
+    CREATE_COMMENT_TYPED_DATA_MUTATION,
     {
       onCompleted({
-        createPostTypedData
+        createCommentTypedData
       }: {
-        createPostTypedData: CreatePostBroadcastItemResult
+        createCommentTypedData: CreateCommentBroadcastItemResult
       }) {
-        consoleLog('Mutation', '#4ade80', 'Generated createPostTypedData')
-        const { typedData } = createPostTypedData
+        consoleLog('Mutation', '#4ade80', 'Generated createCommentTypedData')
+        const { typedData } = createCommentTypedData
         const {
           profileId,
+          profileIdPointed,
+          pubIdPointed,
           contentURI,
           collectModule,
           collectModuleData,
@@ -146,6 +154,8 @@ const NewPost: FC<Props> = ({ refetch, setShowModal, hideCard = false }) => {
           const { v, r, s } = splitSignature(signature)
           const inputStruct = {
             profileId,
+            profileIdPointed,
+            pubIdPointed,
             contentURI,
             collectModule,
             collectModuleData,
@@ -167,40 +177,41 @@ const NewPost: FC<Props> = ({ refetch, setShowModal, hideCard = false }) => {
     }
   )
 
-  const createPost = async () => {
+  const createComment = async () => {
     if (!account?.address) {
       toast.error(CONNECT_WALLET)
     } else if (activeChain?.id !== CHAIN_ID) {
       toast.error(WRONG_NETWORK)
-    } else if (postContent.length === 0 && attachments.length === 0) {
-      setPostContentError('Post should not be empty!')
+    } else if (commentContent.length === 0 && attachments.length === 0) {
+      setCommentContentError('Comment should not be empty!')
     } else {
-      setPostContentError('')
+      setCommentContentError('')
       setIsUploading(true)
       const { path } = await uploadToIPFS({
         version: '1.0.0',
         metadata_id: uuidv4(),
-        description: postContent,
-        content: postContent,
+        description: commentContentLink,
+        content: commentContent,
         external_url: null,
         image: attachments.length > 0 ? attachments[0]?.item : null,
         imageMimeType: attachments.length > 0 ? attachments[0]?.type : null,
-        name: `Post by @${currentUser?.handle}`,
+        name: `Comment by @${currentUser?.handle}`,
         attributes: [
           {
             traitType: 'string',
             key: 'type',
-            value: 'post'
+            value: type
           }
         ],
         media: attachments,
         appId: 'Marble'
       }).finally(() => setIsUploading(false))
 
-      createPostTypedData({
+      createCommentTypedData({
         variables: {
           request: {
             profileId: currentUser?.id,
+            publicationId: post?.id,
             contentURI: `https://ipfs.infura.io/ipfs/${path}`,
             collectModule: feeData.recipient
               ? {
@@ -217,7 +228,7 @@ const NewPost: FC<Props> = ({ refetch, setShowModal, hideCard = false }) => {
   }
 
   return (
-    <Card className={hideCard ? 'border-0 !shadow-none !bg-transparent' : ''}>
+    <Card>
       <div className="px-5 pt-5 pb-3">
         <div className="space-y-1">
           {error && (
@@ -227,20 +238,32 @@ const NewPost: FC<Props> = ({ refetch, setShowModal, hideCard = false }) => {
               error={error}
             />
           )}
+          <p className="font-medium text-sm mb-1">Title</p>
           <MentionTextArea
-            value={postContent}
-            setValue={setPostContent}
-            error={postContentError}
-            setError={setPostContentError}
+            value={commentContent}
+            setValue={setCommentContent}
+            error={commentContentError}
+            setError={setCommentContentError}
             placeholder="Tell something cool!"
           />
+          <p className="font-medium text-sm mt-3 mb-1">Link</p>
+          <MentionTextArea
+            value={commentContentLink}
+            setValue={setCommentContentLink}
+            error={commentContentError}
+            setError={setCommentContentError}
+            placeholder="Tell something cool!"
+          />
+          <p className="text-sm text-gray-400">
+            Leave url blank to submit a question for discussion. If there is no
+            url, the text (if any) will appear at the top of the thread.
+          </p>
           <div className="block items-center sm:flex">
             <div className="flex items-center pt-2 ml-auto space-x-2 sm:pt-0">
               {data?.hash && (
                 <PubIndexStatus
-                  setShowModal={setShowModal}
                   refetch={refetch}
-                  type="Post"
+                  type={type === 'comment' ? 'Comment' : 'Post'}
                   txHash={data?.hash}
                 />
               )}
@@ -261,20 +284,24 @@ const NewPost: FC<Props> = ({ refetch, setShowModal, hideCard = false }) => {
                     signLoading ||
                     writeLoading ? (
                       <Spinner size="xs" />
-                    ) : (
+                    ) : type === 'community post' ? (
                       <PencilAltIcon className="w-4 h-4" />
+                    ) : (
+                      <ChatAlt2Icon className="w-4 h-4" />
                     )
                   }
-                  onClick={createPost}
+                  onClick={createComment}
                 >
                   {isUploading
                     ? 'Uploading to IPFS'
                     : typedDataLoading
-                    ? 'Generating Post'
+                    ? `Generating ${type === 'comment' ? 'Comment' : 'Post'}`
                     : signLoading
                     ? 'Sign'
                     : writeLoading
                     ? 'Send'
+                    : type === 'comment'
+                    ? 'Comment'
                     : 'Post'}
                 </Button>
               )}
@@ -286,4 +313,4 @@ const NewPost: FC<Props> = ({ refetch, setShowModal, hideCard = false }) => {
   )
 }
 
-export default NewPost
+export default NewComment

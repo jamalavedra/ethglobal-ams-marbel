@@ -179,7 +179,10 @@ const Create: FC = () => {
   return (
     <GridLayout>
       <GridItemFour>
-        <SettingsHelper heading="Create knowledge hunt" description="lfg" />
+        <SettingsHelper
+          heading="Create Community"
+          description="Communities is where links are shared, commented and upvoted"
+        />
         <Card>
           {data?.hash ? (
             <Pending

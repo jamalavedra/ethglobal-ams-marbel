@@ -4,8 +4,13 @@ import { FC, useState } from 'react'
 import { Button } from '@components/UI/Button'
 
 import NewPost from '..'
+import { LensterPost } from '@generated/lenstertypes'
 
-const NewPostModal: FC = () => {
+interface Props {
+  post: LensterPost
+}
+
+const NewPostModal: FC<Props> = ({ post }) => {
   const [showModal, setShowModal] = useState<boolean>(false)
 
   return (
@@ -26,7 +31,12 @@ const NewPostModal: FC = () => {
         show={showModal}
         onClose={() => setShowModal(!showModal)}
       >
-        <NewPost setShowModal={setShowModal} hideCard />
+        <NewPost
+          setShowModal={setShowModal}
+          type="community post"
+          hideCard
+          post={post}
+        />
       </Modal>
     </>
   )

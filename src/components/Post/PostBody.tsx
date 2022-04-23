@@ -14,8 +14,10 @@ interface Props {
 const PostBody: FC<Props> = ({ post }) => {
   const { pathname } = useRouter()
   const [showMore, setShowMore] = useState<boolean>(
-    post?.metadata?.content?.length > 450
+    post?.metadata?.content?.length > 250
   )
+
+  console.log(post)
 
   return (
     <div className="break-words">
@@ -26,9 +28,15 @@ const PostBody: FC<Props> = ({ post }) => {
               showMore && pathname !== '/posts/[id]'
           })}
         >
-          <div className="leading-7 whitespace-pre-wrap break-words linkify">
+          <a
+            target="_blank"
+            href={
+              post?.metadata?.description ? post?.metadata?.description : ''
+            }
+            className="leading-7 whitespace-pre-wrap break-words linkify"
+          >
             {post?.metadata?.content?.replace(/\n\s*\n/g, '\n\n').trim()}
-          </div>
+          </a>
         </div>
         {showMore && pathname !== '/posts/[id]' && (
           <button

@@ -1,8 +1,6 @@
 import { gql, useQuery } from '@apollo/client'
 import Feed from '@components/Comment/Feed'
 import { GridItemEight, GridItemFour, GridLayout } from '@components/GridLayout'
-import UserProfile from '@components/Shared/UserProfile'
-import { Card, CardBody } from '@components/UI/Card'
 import { Spinner } from '@components/UI/Spinner'
 import AppContext from '@components/utils/AppContext'
 import { LensterPost } from '@generated/lenstertypes'

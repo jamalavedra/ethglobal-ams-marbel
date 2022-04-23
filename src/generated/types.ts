@@ -1262,7 +1262,7 @@ export type MetadataOutput = {
   /** This is the metadata description */
   description?: Maybe<Scalars['Markdown']>
   /** This is the image attached to the metadata and the property used to show the NFT! */
-  image?: Maybe<Scalars['Url']>
+  image?: Maybe<Scalars['String']>
   /** The images/audios/videos for the publication */
   media: Array<MediaSet>
   /** The metadata name */

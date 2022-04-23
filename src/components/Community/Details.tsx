@@ -14,11 +14,8 @@ import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import Linkify from 'linkify-react'
 import React, { FC, ReactChild, useContext, useState } from 'react'
-import dynamic from 'next/dynamic'
 
 import Join from './Join'
-
-const NewPostModal = dynamic(() => import('../Post/NewPost/Modal'))
 
 dayjs.extend(relativeTime)
 
@@ -90,7 +87,7 @@ const Details: FC<Props> = ({ community }) => {
           {joinLoading ? (
             <div className="w-28 rounded-lg h-[34px] shimmer" />
           ) : joined ? (
-            <div className="py-0.5 px-2 text-sm text-white rounded-lg shadow-sm bg-brand-500 w-fit">
+            <div className="py-0.5 px-2 text-sm bg-white text-brand-600 font-medium rounded-lg shadow-sm border-brand-500 border-2 w-fit">
               Member
             </div>
           ) : (
@@ -131,7 +128,6 @@ const Details: FC<Props> = ({ community }) => {
           <MetaDetails icon={<ClockIcon className="w-4 h-4" />}>
             {dayjs(new Date(community?.createdAt)).fromNow()}
           </MetaDetails>
-          <NewPostModal />
         </div>
       </div>
     </div>

@@ -27,6 +27,7 @@ export const CommentFields = gql`
       name
       description
       content
+
       description
       media {
         original {

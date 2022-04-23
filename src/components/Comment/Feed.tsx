@@ -6,11 +6,14 @@ import { Spinner } from '@components/UI/Spinner'
 import { LensterPost } from '@generated/lenstertypes'
 import { PaginatedResultInfo } from '@generated/types'
 import { CommentFields } from '@gql/CommentFields'
-import { CollectionIcon } from '@heroicons/react/outline'
 import consoleLog from '@lib/consoleLog'
 import { useRouter } from 'next/router'
 import React, { FC, useState } from 'react'
 import { useInView } from 'react-cool-inview'
+import NewComment from './NewComment'
+import dynamic from 'next/dynamic'
+
+const NewPostModal = dynamic(() => import('../Post/NewPost/Modal'))
 
 const COMMENT_FEED_QUERY = gql`
   query CommentFeed($request: PublicationsQueryRequest!) {
@@ -90,6 +93,7 @@ const Feed: FC<Props> = ({
 
   return (
     <>
+      <NewPostModal refetch={refetch} post={post} type={type} />
       {loading && (
         <div className="flex flex-grow justify-center items-center h-screen animate-pulse">
           <span className="flex justify-center p-5">
@@ -99,8 +103,8 @@ const Feed: FC<Props> = ({
       )}
       {data?.publications?.items?.length === 0 && (
         <EmptyState
-          message={<span>Be the first one to comment!</span>}
-          icon={<CollectionIcon className="w-8 h-8 text-brand" />}
+          message={<span>Be the first one to share!</span>}
+          icon={'📕 🌟 🧠'}
         />
       )}
       <ErrorMessage title="Failed to load comment feed" error={error} />

@@ -27,7 +27,6 @@ export const PostFields = gql`
       name
       description
       content
-      description
       media {
         original {
           url
