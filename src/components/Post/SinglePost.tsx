@@ -19,6 +19,7 @@ import Delete from './Actions/Delete'
 interface Props {
   post: LensterPost
   index: number
+  postPage?: boolean
   hideType?: boolean
   comments?: boolean
 }
@@ -26,6 +27,7 @@ interface Props {
 const SinglePost: FC<Props> = ({
   post,
   index,
+  postPage = false,
   comments = false,
   hideType = false
 }) => {
@@ -37,9 +39,11 @@ const SinglePost: FC<Props> = ({
         <PostType post={post} hideType={hideType} />
 
         <div className="flex space-x-3 w-full">
-          {!comments && (
+          {!comments && !postPage && (
             <div>
-              <p className="text-sm text-gray-500 leading-7">{index+1 + '.'}</p>
+              <p className="text-sm text-gray-500 leading-7">
+                {index + 1 + '.'}
+              </p>
             </div>
           )}
 

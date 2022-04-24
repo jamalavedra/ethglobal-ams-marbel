@@ -1,6 +1,14 @@
 // Types
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { Community } from '@generated/lenstertypes'
+import { ApolloServer } from 'apollo-server'
+
+async function startApolloServer(typeDefs, resolvers) {
+  const server = new ApolloServer({ typeDefs, resolvers })
+  const { url } = await server.listen()
+  console.log(`🚀 Server ready at ${url}`)
+}
+
 import { gql, useQuery } from '@apollo/client'
 import { CommunityFields } from '@gql/CommunityFields'
 

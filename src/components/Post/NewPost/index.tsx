@@ -115,6 +115,7 @@ const NewComment: FC<Props> = ({ refetch, post, type }) => {
     {
       onSuccess() {
         setCommentContent('')
+        setCommentContentLink('')
         setAttachments([])
         setSelectedModule(defaultModuleData)
         setFeeData(defaultFeeData)
@@ -261,11 +262,13 @@ const NewComment: FC<Props> = ({ refetch, post, type }) => {
           <div className="block items-center sm:flex">
             <div className="flex items-center pt-2 ml-auto space-x-2 sm:pt-0">
               {data?.hash && (
-                <PubIndexStatus
-                  refetch={refetch}
-                  type={type === 'comment' ? 'Comment' : 'Post'}
-                  txHash={data?.hash}
-                />
+                <div className="py-2">
+                  <PubIndexStatus
+                    refetch={refetch}
+                    type={type === 'comment' ? 'Comment' : 'Entry'}
+                    txHash={data?.hash}
+                  />
+                </div>
               )}
               {activeChain?.id !== CHAIN_ID ? (
                 <SwitchNetwork className="ml-auto" />

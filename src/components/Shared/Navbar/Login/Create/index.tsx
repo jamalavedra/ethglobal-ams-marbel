@@ -96,7 +96,7 @@ const Create: FC<Props> = ({ isModal = false }) => {
       {isModal && (
         <div className="mb-2 space-y-4">
           <img className="w-10 h-10" src="/logo.svg" alt="Logo" />
-          <div className="text-xl font-bold">Signup to Marble</div>
+          <div className="text-xl font-bold">Signup to Marbel</div>
         </div>
       )}
       <Input

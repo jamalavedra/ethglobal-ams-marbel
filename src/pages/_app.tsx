@@ -43,7 +43,7 @@ const connectors = ({ chainId }: ConnectorsConfig) => {
     }),
     new CoinbaseWalletConnector({
       options: {
-        appName: 'Marble',
+        appName: 'Marbel',
         jsonRpcUrl: `${rpcUrl}/${INFURA_ID}`
       }
     })

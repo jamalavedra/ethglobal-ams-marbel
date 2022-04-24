@@ -1,14 +1,14 @@
 import { gql, useQuery } from '@apollo/client'
 import { GridItemSix, GridLayout } from '@components/GridLayout'
 import { Button } from '@components/UI/Button'
-import { Spinner } from '@components/UI/Spinner'
+import { PageLoading } from '@components/UI/PageLoading'
 import { CommunityFields } from '@gql/CommunityFields'
 import { FireIcon, GlobeAltIcon, PlusIcon } from '@heroicons/react/outline'
+import consoleLog from '@lib/consoleLog'
 import { NextPage } from 'next'
-import Link from 'next/link'
 import React from 'react'
 import Custom500 from 'src/pages/500'
-
+import Link from 'next/link'
 import List from './List'
 
 const COMMUNITY_QUERY = gql`
@@ -49,62 +49,66 @@ const Communities: NextPage = () => {
         publicationTypes: ['POST'],
         limit: 8
       }
+    },
+    onCompleted() {
+      consoleLog(
+        'Query',
+        '#8b5cf6',
+        `Fetched 10 TOP_COMMENTED and TOP_COLLECTED communities`
+      )
     }
   })
 
   if (error) return <Custom500 />
-  if (loading || !data)
-    return (
-      <div className="flex flex-grow justify-center items-center h-screen animate-pulse">
-        <span className="flex justify-center p-5">
-          <Spinner size="sm" />
-        </span>
-      </div>
-    )
+  if (loading || !data) return <PageLoading message="Loading community" />
 
   return (
     <GridLayout>
-            <GridItemSix>
-     
+      <GridItemSix>
         <div className="py-12 mb-4 bg-white bg-hero">
-      <div className="container px-5 mx-auto max-w-screen-xl">
-        <div className="flex items-stretch py-8 w-full text-center sm:py-12 sm:text-left">
-          <div className="flex-1 flex-shrink-0 space-y-3">
-            <div className="text-2xl font-extrabold text-black sm:text-4xl">
-              Welcome to Marble 👋
+          <div className="container px-5 mx-auto max-w-screen-xl">
+            <div className="flex items-stretch py-8 w-full text-center sm:py-12 sm:text-left">
+              <div className="flex-1 flex-shrink-0 space-y-3">
+                <div className="text-2xl font-extrabold text-black sm:text-4xl">
+                  Welcome to Marble 👋
+                </div>
+                <div className="leading-7 text-gray-700">
+                  Let your communities help you discover the worlds most
+                  interesting sites
+                </div>
+              </div>
+
+              <div className="hidden flex-1 flex-shrink-0 w-full sm:block" />
             </div>
-            <div className="leading-7 text-gray-700">
-              Let your communities help you discover the worlds most interesting sites
+            <div className="flex">
+              <Button
+                className="mr-2"
+                outline
+                icon={<GlobeAltIcon className="w-4 h-4" />}
+              >
+                <Link href={'/communities/0x05e1-0x09'}>
+                  <a href={'/communities/0x05e1-0x09'}>
+                    {'Explore a Community'}
+                  </a>
+                </Link>
+              </Button>
+
+              <Button icon={<PlusIcon className="w-4 h-4" />}>
+                <Link href={'/create/community'}>
+                  <a href={'/create/community'}>{'Create Community'}</a>
+                </Link>
+              </Button>
             </div>
           </div>
-        
-          <div className="hidden flex-1 flex-shrink-0 w-full sm:block" />
-      
         </div>
-        <div className='flex'>
-        <Button className='mr-2' outline icon={<GlobeAltIcon className="w-4 h-4" />}>
-          <Link href={'/communities/0x05e1-0x09'}>
-            <a href={'/communities/0x05e1-0x09'}>{'Explore a Community'}</a>
-          </Link>
-        </Button>
-      
-        <Button icon={<PlusIcon className="w-4 h-4" />}>
-          <Link href={'/create/community'}>
-            <a href={'/create/community'}>{'Create Community'}</a>
-          </Link>
-        </Button>
-        </div>
-      </div>
-    </div>
       </GridItemSix>
       <GridItemSix>
         <div className="flex items-center mb-2 space-x-1.5 font-bold text-gray-500">
           <FireIcon className="w-5 h-5 text-yellow-500" />
-          <div>Most Active Community</div>
+          <div>Most Active Communities</div>
         </div>
         <List communities={data?.topCommented.items} />
       </GridItemSix>
-
     </GridLayout>
   )
 }

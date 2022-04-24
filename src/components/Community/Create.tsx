@@ -235,7 +235,7 @@ const Create: FC = () => {
               <Input
                 label="Name"
                 type="text"
-                placeholder="minecraft"
+                placeholder="Investment DAO"
                 {...form.register('name')}
               />
               <TextArea

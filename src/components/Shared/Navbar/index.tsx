@@ -33,8 +33,8 @@ const Navbar: FC = () => {
                 </Disclosure.Button>
                 <Link href="/">
                   <a href="/" className="text-3xl flex font-black">
-                    <img className="w-12 h-12" src="/logo.svg" alt="Marble" />
-                    <p className="pt-2 text-2xl font-medium">{'Marble'}</p>
+                    <img className="w-12 h-12" src="/logo.svg" alt="Marbel" />
+                    <p className="pt-2 text-2xl font-medium">{'Marbel'}</p>
                   </a>
                 </Link>
               </div>

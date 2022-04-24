@@ -35,7 +35,11 @@ const PostBody: FC<Props> = ({ post }) => {
             className="leading-7 whitespace-pre-wrap break-words linkify"
           >
             {post?.metadata?.content?.replace(/\n\s*\n/g, '\n\n').trim()}
-            {post?.metadata?.description&&<span className='text-sm ml-2 hover:underline text-gray-500'>{'('+ post?.metadata?.description+')'}</span>}
+            {post?.metadata?.description && (
+              <span className="text-sm ml-2 hover:underline text-gray-500">
+                {'(' + post?.metadata?.description + ')'}
+              </span>
+            )}
           </a>
         </div>
         {showMore && pathname !== '/posts/[id]' && (

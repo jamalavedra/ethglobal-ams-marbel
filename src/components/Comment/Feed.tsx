@@ -14,7 +14,10 @@ import dynamic from 'next/dynamic'
 
 const NewPostModal = dynamic(() => import('../Post/NewPost/Modal'))
 
-function descendingComparator(a: any[], b: any[]) {
+function descendingComparator(
+  a: { [key: string]: { [key: string]: any[] } },
+  b: { [key: string]: { [key: string]: any[] } }
+) {
   if (b['stats']['totalAmountOfMirrors'] < a['stats']['totalAmountOfMirrors']) {
     return -1
   }
@@ -26,8 +29,8 @@ function descendingComparator(a: any[], b: any[]) {
 
 function getComparator(order: string) {
   return order === 'desc'
-    ? (a, b) => descendingComparator(a, b)
-    : (a, b) => -descendingComparator(a, b)
+    ? (a: any, b: any) => descendingComparator(a, b)
+    : (a: any, b: any) => -descendingComparator(a, b)
 }
 
 function stableSort(array: any[], comparator: any) {
