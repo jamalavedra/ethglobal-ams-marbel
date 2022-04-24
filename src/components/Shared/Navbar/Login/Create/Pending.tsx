@@ -4,7 +4,7 @@ import { Spinner } from '@components/UI/Spinner'
 import { TX_STATUS_QUERY } from '@gql/HasTxHashBeenIndexed'
 import { ArrowRightIcon } from '@heroicons/react/outline'
 import React, { FC } from 'react'
-
+import Link from 'next/link'
 interface Props {
   handle: string
   txHash: string
@@ -30,14 +30,16 @@ const Pending: FC<Props> = ({ handle, txHash }) => {
           <div className="text-[40px]">🌿</div>
           <div>Account created successfully</div>
           <div className="pt-3">
-            <a href={`/u/${handle}`}>
+            <Link href='/'>
+            <a >
               <Button
                 className="mx-auto"
                 icon={<ArrowRightIcon className="mr-1 w-4 h-4" />}
               >
-                Go to profile
+                Explore communities
               </Button>
             </a>
+            </Link>
           </div>
         </div>
       )}
