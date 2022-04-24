@@ -39,7 +39,7 @@ const SinglePost: FC<Props> = ({
         <div className="flex space-x-3 w-full">
           {!comments && (
             <div>
-              <p className="text-sm text-gray-500 leading-7">{index + '.'}</p>
+              <p className="text-sm text-gray-500 leading-7">{index+1 + '.'}</p>
             </div>
           )}
 
