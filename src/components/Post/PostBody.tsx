@@ -17,8 +17,6 @@ const PostBody: FC<Props> = ({ post }) => {
     post?.metadata?.content?.length > 250
   )
 
-  console.log(post)
-
   return (
     <div className="break-words">
       <Linkify tagName="div" options={linkifyOptions}>
@@ -30,6 +28,7 @@ const PostBody: FC<Props> = ({ post }) => {
         >
           <a
             target="_blank"
+            rel="noreferrer"
             href={
               post?.metadata?.description ? post?.metadata?.description : ''
             }

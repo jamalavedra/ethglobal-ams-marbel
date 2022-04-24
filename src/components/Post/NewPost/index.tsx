@@ -244,7 +244,7 @@ const NewComment: FC<Props> = ({ refetch, post, type }) => {
             setValue={setCommentContent}
             error={commentContentError}
             setError={setCommentContentError}
-            placeholder="Tell something cool!"
+            placeholder=""
           />
           <p className="font-medium text-sm mt-3 mb-1">Link</p>
           <MentionTextArea
@@ -252,7 +252,7 @@ const NewComment: FC<Props> = ({ refetch, post, type }) => {
             setValue={setCommentContentLink}
             error={commentContentError}
             setError={setCommentContentError}
-            placeholder="Tell something cool!"
+            placeholder=""
           />
           <p className="text-sm text-gray-400">
             Leave url blank to submit a question for discussion. If there is no
@@ -302,7 +302,7 @@ const NewComment: FC<Props> = ({ refetch, post, type }) => {
                     ? 'Send'
                     : type === 'comment'
                     ? 'Comment'
-                    : 'Post'}
+                    : 'Submit'}
                 </Button>
               )}
             </div>

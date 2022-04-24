@@ -98,16 +98,19 @@ const ViewPost: NextPage = () => {
 
   return (
     <GridLayout>
-      <GridItemEight className="space-y-5">
+      <GridItemEight>
         <SinglePost post={post} index={1} />
-        <Feed
-          post={post}
-          onlyFollowers={
-            post?.referenceModule?.__typename ===
-            'FollowOnlyReferenceModuleSettings'
-          }
-          isFollowing={data?.doesFollow[0]?.follows}
-        />
+        <div className="ml-7">
+          <Feed
+            comments={true}
+            post={post}
+            onlyFollowers={
+              post?.referenceModule?.__typename ===
+              'FollowOnlyReferenceModuleSettings'
+            }
+            isFollowing={data?.doesFollow[0]?.follows}
+          />
+        </div>
       </GridItemEight>
       <GridItemFour className="space-y-5">
         <IPFSHash ipfsHash={post?.onChainContentURI} />

@@ -1,6 +1,5 @@
 import { gql, useQuery } from '@apollo/client'
 import SinglePost from '@components/Post/SinglePost'
-import { EmptyState } from '@components/UI/EmptyState'
 import { ErrorMessage } from '@components/UI/ErrorMessage'
 import { Spinner } from '@components/UI/Spinner'
 import { LensterPost } from '@generated/lenstertypes'
@@ -14,6 +13,32 @@ import NewComment from './NewComment'
 import dynamic from 'next/dynamic'
 
 const NewPostModal = dynamic(() => import('../Post/NewPost/Modal'))
+
+function descendingComparator(a: any[], b: any[]) {
+  if (b['stats']['totalAmountOfMirrors'] < a['stats']['totalAmountOfMirrors']) {
+    return -1
+  }
+  if (b['stats']['totalAmountOfMirrors'] > a['stats']['totalAmountOfMirrors']) {
+    return 1
+  }
+  return 0
+}
+
+function getComparator(order: string) {
+  return order === 'desc'
+    ? (a, b) => descendingComparator(a, b)
+    : (a, b) => -descendingComparator(a, b)
+}
+
+function stableSort(array: any[], comparator: any) {
+  const stabilizedThis = array.map((el, index) => [el, index])
+  stabilizedThis.sort((a, b) => {
+    const order = comparator(a[0], b[0])
+    if (order !== 0) return order
+    return a[1] - b[1]
+  })
+  return stabilizedThis.map((el) => el[0])
+}
 
 const COMMENT_FEED_QUERY = gql`
   query CommentFeed($request: PublicationsQueryRequest!) {
@@ -33,6 +58,7 @@ const COMMENT_FEED_QUERY = gql`
 
 interface Props {
   post: LensterPost
+  comments?: boolean
   type?: 'comment' | 'community post'
   onlyFollowers?: boolean
   isFollowing?: boolean
@@ -40,6 +66,7 @@ interface Props {
 
 const Feed: FC<Props> = ({
   post,
+  comments,
   type = 'comment',
   onlyFollowers = false,
   isFollowing = true
@@ -47,6 +74,7 @@ const Feed: FC<Props> = ({
   const {
     query: { id }
   } = useRouter()
+  const [order, setOrder] = React.useState('desc')
   const [publications, setPublications] = useState<LensterPost[]>([])
   const [pageInfo, setPageInfo] = useState<PaginatedResultInfo>()
   const { data, loading, error, fetchMore, refetch } = useQuery(
@@ -58,7 +86,9 @@ const Feed: FC<Props> = ({
       skip: !id,
       onCompleted(data) {
         setPageInfo(data?.publications?.pageInfo)
+        // stats?.totalAmountOfMirrors
         setPublications(data?.publications?.items)
+        console.log(data?.publications?.items)
         consoleLog(
           'Query',
           '#8b5cf6',
@@ -93,7 +123,7 @@ const Feed: FC<Props> = ({
 
   return (
     <>
-      <NewPostModal refetch={refetch} post={post} type={type} />
+      {!comments && <NewPostModal post={post} />}
       {loading && (
         <div className="flex flex-grow justify-center items-center h-screen animate-pulse">
           <span className="flex justify-center p-5">
@@ -101,24 +131,21 @@ const Feed: FC<Props> = ({
           </span>
         </div>
       )}
-      {data?.publications?.items?.length === 0 && (
-        <EmptyState
-          message={<span>Be the first one to share!</span>}
-          icon={'📕 🌟 🧠'}
-        />
-      )}
       <ErrorMessage title="Failed to load comment feed" error={error} />
       {!error && !loading && (
         <>
-          <div className="space-y-3">
-            {publications?.map((post: LensterPost, index: number) => (
-              <SinglePost
-                key={`${post?.id}_${index}`}
-                index={index}
-                post={post}
-                hideType
-              />
-            ))}
+          <div className={`${!comments ? 'space-y-3' : ''}`}>
+            {stableSort(publications, getComparator(order))?.map(
+              (post: LensterPost, index: number) => (
+                <SinglePost
+                  key={`${post?.id}_${index}`}
+                  index={index}
+                  post={post}
+                  comments={comments}
+                  hideType
+                />
+              )
+            )}
           </div>
           {pageInfo?.next && (
             <span ref={observe} className="flex justify-center p-5">
@@ -126,6 +153,11 @@ const Feed: FC<Props> = ({
             </span>
           )}
         </>
+      )}
+      {comments && (
+        <div className="mt-5">
+          <NewComment refetch={refetch} post={post} type={type} />
+        </div>
       )}
     </>
   )

@@ -3,7 +3,6 @@
 import Author from '@components/Shared/Author'
 import { Card, CardBody } from '@components/UI/Card'
 import { LensterPost } from '@generated/lenstertypes'
-import { ChevronUpIcon } from '@heroicons/react/solid'
 // import getURLFromPublication from '@lib/getURLFromPublication'
 
 import Link from 'next/link'
@@ -11,21 +10,38 @@ import React, { FC } from 'react'
 import humanize from '@lib/humanize'
 
 import PostBody from './PostBody'
+import PostType from './Type'
+import Mirror from './Actions/Mirror'
+import { useContext } from 'react'
+import AppContext from '@components/utils/AppContext'
+import Delete from './Actions/Delete'
 
 interface Props {
   post: LensterPost
   index: number
   hideType?: boolean
+  comments?: boolean
 }
 
-const SinglePost: FC<Props> = ({ post, index, hideType = false }) => {
+const SinglePost: FC<Props> = ({
+  post,
+  index,
+  comments = false,
+  hideType = false
+}) => {
+  const { currentUser } = useContext(AppContext)
+
   return (
     <Card>
       <CardBody>
+        <PostType post={post} hideType={hideType} />
+
         <div className="flex space-x-3 w-full">
-          <div>
-            <p className="text-sm text-gray-500 leading-7">{index + '.'}</p>
-          </div>
+          {!comments && (
+            <div>
+              <p className="text-sm text-gray-500 leading-7">{index + '.'}</p>
+            </div>
+          )}
 
           <div className="flex-1">
             <PostBody post={post} />
@@ -43,21 +59,24 @@ const SinglePost: FC<Props> = ({ post, index, hideType = false }) => {
               <div className="flex ml-1">
                 <Link href={`/posts/${post?.id}`}>
                   <a href={`/posts/${post?.id}`}>
-                    <span className="text-xs text-gray-400">
+                    <span className="text-xs text-gray-400 hover:underline">
                       {' | ' +
                         humanize(post?.stats?.totalAmountOfComments) +
                         ' comments'}
                     </span>
+                    {currentUser?.id === post?.profile?.id && (
+                      <Delete post={post} />
+                    )}
                   </a>
                 </Link>
               </div>
             </div>
           </div>
-          <div>
-            <button className="p-3 m-2 border rounded">
-              <ChevronUpIcon className="w-4 h-4 text-gray-500" />
-            </button>
-          </div>
+          {!comments && (
+            <div>
+              <Mirror post={post} />
+            </div>
+          )}
         </div>
 
         {/* {post?.metadata?.media?.length > 0 ? (

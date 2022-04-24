@@ -6,7 +6,7 @@ import Collectors from '@components/Shared/Collectors'
 import { Modal } from '@components/UI/Modal'
 import AppContext from '@components/utils/AppContext'
 import { LensterPost } from '@generated/lenstertypes'
-import { ClockIcon, HashtagIcon, UsersIcon } from '@heroicons/react/outline'
+import { UsersIcon } from '@heroicons/react/outline'
 import consoleLog from '@lib/consoleLog'
 import humanize from '@lib/humanize'
 import linkifyOptions from '@lib/linkifyOptions'
@@ -95,9 +95,6 @@ const Details: FC<Props> = ({ community }) => {
           )}
         </div>
         <div className="space-y-2">
-          <MetaDetails icon={<HashtagIcon className="w-4 h-4" />}>
-            {community?.id}
-          </MetaDetails>
           <MetaDetails icon={<UsersIcon className="w-4 h-4" />}>
             <>
               <button
@@ -124,9 +121,6 @@ const Details: FC<Props> = ({ community }) => {
               {humanize(community?.stats?.totalAmountOfComments)}{' '}
               {community?.stats?.totalAmountOfComments > 1 ? 'posts' : 'post'}
             </>
-          </MetaDetails>
-          <MetaDetails icon={<ClockIcon className="w-4 h-4" />}>
-            {dayjs(new Date(community?.createdAt)).fromNow()}
           </MetaDetails>
         </div>
       </div>

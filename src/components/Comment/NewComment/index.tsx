@@ -241,7 +241,7 @@ const NewComment: FC<Props> = ({ refetch, post, type }) => {
             setValue={setCommentContent}
             error={commentContentError}
             setError={setCommentContentError}
-            placeholder="Tell something cool!"
+            placeholder=""
           />
           <div className="block items-center sm:flex">
             <div className="flex items-center pt-2 ml-auto space-x-2 sm:pt-0">

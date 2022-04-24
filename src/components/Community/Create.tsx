@@ -1,7 +1,6 @@
 import LensHubProxy from '@abis/LensHubProxy.json'
 import { useMutation } from '@apollo/client'
 import { GridItemFour, GridLayout } from '@components/GridLayout'
-import { CREATE_POST_TYPED_DATA_MUTATION } from '@components/Post/NewPost'
 import Pending from '@components/Shared/Pending'
 import SettingsHelper from '@components/Shared/SettingsHelper'
 import SwitchNetwork from '@components/Shared/SwitchNetwork'
@@ -36,6 +35,40 @@ import {
   useSignTypedData
 } from 'wagmi'
 import { object, string } from 'zod'
+import { gql } from '@apollo/client'
+
+export const CREATE_POST_TYPED_DATA_MUTATION = gql`
+  mutation CreatePostTypedData($request: CreatePublicPostRequest!) {
+    createPostTypedData(request: $request) {
+      id
+      expiresAt
+      typedData {
+        types {
+          PostWithSig {
+            name
+            type
+          }
+        }
+        domain {
+          name
+          chainId
+          version
+          verifyingContract
+        }
+        value {
+          nonce
+          deadline
+          profileId
+          contentURI
+          collectModule
+          collectModuleData
+          referenceModule
+          referenceModuleData
+        }
+      }
+    }
+  }
+`
 
 const newCommunitySchema = object({
   name: string()
@@ -50,7 +83,6 @@ const Create: FC = () => {
   const [avatar, setAvatar] = useState<string>()
   const [avatarType, setAvatarType] = useState<string>()
   const [isUploading, setIsUploading] = useState<boolean>(false)
-  const [uploading, setUploading] = useState<boolean>(false)
   const { currentUser } = useContext(AppContext)
   const { activeChain } = useNetwork()
   const { data: account } = useAccount()

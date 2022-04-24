@@ -5,10 +5,8 @@ import { Profile } from '@generated/types'
 import { Menu, Transition } from '@headlessui/react'
 import {
   ArrowCircleRightIcon,
-  CogIcon,
   LogoutIcon,
-  SwitchHorizontalIcon,
-  UserIcon
+  SwitchHorizontalIcon
 } from '@heroicons/react/outline'
 import { CheckCircleIcon } from '@heroicons/react/solid'
 import clsx from 'clsx'
