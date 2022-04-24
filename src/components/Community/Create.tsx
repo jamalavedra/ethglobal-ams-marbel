@@ -26,7 +26,7 @@ import {
   LENSHUB_PROXY,
   WRONG_NETWORK
 } from 'src/constants'
-import Custom404 from 'src/pages/404'
+import Custom403 from 'src/pages/403'
 import { v4 as uuidv4 } from 'uuid'
 import {
   useAccount,
@@ -206,7 +206,7 @@ const Create: FC = () => {
     }
   }
 
-  if (!currentUser) return <Custom404 />
+  if (!currentUser) return <Custom403 />
 
   return (
     <GridLayout>

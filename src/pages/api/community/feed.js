@@ -1,5 +1,4 @@
 // Types
-import type { NextApiRequest, NextApiResponse } from 'next'
 import { Community } from '@generated/lenstertypes'
 import { ApolloServer } from 'apollo-server'
 
@@ -23,7 +22,7 @@ const COMMUNITY_QUERY = gql`
   ${CommunityFields}
 `
 
-export const getFeed = async (id: string): Promise<Community[]> => {
+export const getFeed = async (id) => {
   const { data } = useQuery(COMMUNITY_QUERY, {
     variables: { request: { publicationId: id } },
     skip: !id
@@ -32,13 +31,13 @@ export const getFeed = async (id: string): Promise<Community[]> => {
   return data?.publication
 }
 
-export default async (req: NextApiRequest, res: NextApiResponse) => {
+export default async (req, res) => {
   // Check authentication
-  const { id }: { id: string } = req.body
+  const { id } = req.body
   console.log(id)
   try {
     // Collect and send gates
-    const feed: Community[] = await getFeed(id)
+    const feed = await getFeed(id)
     res.status(200).send(feed)
   } catch (e) {
     // Else, return error

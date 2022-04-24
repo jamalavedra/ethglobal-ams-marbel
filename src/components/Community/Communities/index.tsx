@@ -10,6 +10,7 @@ import React from 'react'
 import Custom500 from 'src/pages/500'
 import Link from 'next/link'
 import List from './List'
+import Footer from '@components/Shared/Footer'
 
 const COMMUNITY_QUERY = gql`
   query (
@@ -60,7 +61,7 @@ const Communities: NextPage = () => {
   })
 
   if (error) return <Custom500 />
-  if (loading || !data) return <PageLoading message="Loading community" />
+  if (loading || !data) return <PageLoading message="" />
 
   return (
     <GridLayout>
@@ -70,7 +71,7 @@ const Communities: NextPage = () => {
             <div className="flex items-stretch py-8 w-full text-center sm:py-12 sm:text-left">
               <div className="flex-1 flex-shrink-0 space-y-3">
                 <div className="text-2xl font-extrabold text-black sm:text-4xl">
-                  Welcome to Marble 👋
+                  Welcome to Marbel 👋
                 </div>
                 <div className="leading-7 text-gray-700">
                   Let your communities help you discover the worlds most
@@ -101,6 +102,7 @@ const Communities: NextPage = () => {
             </div>
           </div>
         </div>
+        <Footer />
       </GridItemSix>
       <GridItemSix>
         <div className="flex items-center mb-2 space-x-1.5 font-bold text-gray-500">
