@@ -280,7 +280,7 @@ const NewComment: FC<Props> = ({ refetch, post, type }) => {
                   {isUploading
                     ? 'Uploading to IPFS'
                     : typedDataLoading
-                    ? `Generating ${type === 'comment' ? 'Comment' : 'Post'}`
+                    ? `Generating ${type === 'comment' ? 'Comment' : 'Entry'}`
                     : signLoading
                     ? 'Sign'
                     : writeLoading

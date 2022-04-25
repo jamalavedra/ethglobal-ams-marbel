@@ -99,7 +99,7 @@ const ViewPost: NextPage = () => {
   return (
     <GridLayout>
       <GridItemEight>
-        <SinglePost post={post} index={1} postPage={true} />
+        <SinglePost post={post} postPage={true} />
         <div className="ml-7">
           <Feed
             comments={true}

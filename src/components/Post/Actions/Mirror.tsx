@@ -80,7 +80,7 @@ const Mirror: FC<Props> = ({ post }) => {
     'mirrorWithSig',
     {
       onSuccess() {
-        toast.success('Post has been mirrored!')
+        toast.success('Post has been upvoted!')
       },
       onError(error) {
         toast.error(error?.message)

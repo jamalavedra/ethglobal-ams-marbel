@@ -18,20 +18,19 @@ import Delete from './Actions/Delete'
 
 interface Props {
   post: LensterPost
-  index: number
+  index?: number
   postPage?: boolean
   hideType?: boolean
-  comments?: boolean
 }
 
 const SinglePost: FC<Props> = ({
   post,
-  index,
+  index=0,
   postPage = false,
-  comments = false,
   hideType = false
 }) => {
   const { currentUser } = useContext(AppContext)
+  const postType = post?.metadata?.attributes[0]?.value
 
   return (
     <Card>
@@ -39,7 +38,7 @@ const SinglePost: FC<Props> = ({
         <PostType post={post} hideType={hideType} />
 
         <div className="flex space-x-3 w-full">
-          {!comments && !postPage && (
+          {!hideType && !postPage && (
             <div>
               <p className="text-sm text-gray-500 leading-7">
                 {index + 1 + '.'}
@@ -48,7 +47,7 @@ const SinglePost: FC<Props> = ({
           )}
 
           <div className="flex-1">
-            <PostBody post={post} />
+            <PostBody post={post} hideType={hideType} />
             <div className="flex pb-4">
               <div>
                 <Author
@@ -76,7 +75,7 @@ const SinglePost: FC<Props> = ({
               </div>
             </div>
           </div>
-          {!comments && (
+          {!hideType && postType === 'community post' && (
             <div>
               <Mirror post={post} />
             </div>

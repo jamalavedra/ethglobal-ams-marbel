@@ -6,7 +6,6 @@ import Slug from './Slug'
 
 interface Props {
   profile: Profile
-  showBio?: boolean
   showFollow?: boolean
   followStatusLoading?: boolean
   isFollowing?: boolean
@@ -15,7 +14,6 @@ interface Props {
 
 const UserProfile: FC<Props> = ({
   profile,
-  showBio = false,
   showFollow = false,
   followStatusLoading = false,
   isFollowing = false,
@@ -28,11 +26,6 @@ const UserProfile: FC<Props> = ({
           <div className="flex items-center space-x-3">
             <div>
               <Slug className="text-sm" slug={profile?.handle} prefix="@" />
-              {showBio && profile?.bio && (
-                <div className={clsx(isBig ? 'text-md' : 'text-sm', 'mt-2')}>
-                  {profile?.bio}
-                </div>
-              )}
             </div>
           </div>
         </a>

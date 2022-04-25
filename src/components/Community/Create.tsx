@@ -72,8 +72,8 @@ export const CREATE_POST_TYPED_DATA_MUTATION = gql`
 
 const newCommunitySchema = object({
   name: string()
-    .min(2, { message: 'Name should be atleast 2 characters' })
-    .max(31, { message: 'Name should be less than 32 characters' }),
+    .min(2, { message: 'Title should be at least 2 characters' })
+    .max(31, { message: 'Title should be less than 32 characters' }),
   description: string()
     .max(260, { message: 'Description should not exceed 260 characters' })
     .nullable()

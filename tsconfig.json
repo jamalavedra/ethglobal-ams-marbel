@@ -21,7 +21,6 @@
       "@utils*": ["src/utils*"],
       "@lib*": ["src/lib*"],
       "@gql*": ["src/graphql*"],
-      "@pages*": ["src/pages*"],
       "@generated*": ["src/generated*"]
     }
   },

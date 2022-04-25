@@ -6,7 +6,7 @@ import Collectors from '@components/Shared/Collectors'
 import { Modal } from '@components/UI/Modal'
 import AppContext from '@components/utils/AppContext'
 import { LensterPost } from '@generated/lenstertypes'
-import { UsersIcon } from '@heroicons/react/outline'
+import { AnnotationIcon, UsersIcon } from '@heroicons/react/outline'
 import consoleLog from '@lib/consoleLog'
 import humanize from '@lib/humanize'
 import linkifyOptions from '@lib/linkifyOptions'
@@ -116,10 +116,12 @@ const Details: FC<Props> = ({ community }) => {
               </Modal>
             </>
           </MetaDetails>
-          <MetaDetails icon={<UsersIcon className="w-4 h-4" />}>
+          <MetaDetails icon={<AnnotationIcon className="w-4 h-4" />}>
             <>
               {humanize(community?.stats?.totalAmountOfComments)}{' '}
-              {community?.stats?.totalAmountOfComments > 1 ? 'posts' : 'post'}
+              {community?.stats?.totalAmountOfComments > 1
+                ? 'entries'
+                : 'entry'}
             </>
           </MetaDetails>
         </div>

@@ -9,9 +9,10 @@ import React, { FC, useState } from 'react'
 
 interface Props {
   post: LensterPost
+  hideType: boolean
 }
 
-const PostBody: FC<Props> = ({ post }) => {
+const PostBody: FC<Props> = ({ post, hideType }) => {
   const { pathname } = useRouter()
   const [showMore, setShowMore] = useState<boolean>(
     post?.metadata?.content?.length > 250
@@ -27,15 +28,17 @@ const PostBody: FC<Props> = ({ post }) => {
           })}
         >
           <a
-            target="_blank"
+            target={post?.metadata?.description?'_blank':'_self'}
             rel="noreferrer"
             href={
-              post?.metadata?.description ? post?.metadata?.description : ''
+              post?.metadata?.description ? post?.metadata?.description : '/posts/'+post.id
             }
-            className="leading-7 whitespace-pre-wrap break-words linkify"
+            className={`leading-7 whitespace-pre-wrap break-words linkify ${
+              hideType ? 'pointer-events-none cursor-defaulto' : ''
+            }`}
           >
             {post?.metadata?.content?.replace(/\n\s*\n/g, '\n\n').trim()}
-            {post?.metadata?.description && (
+            {post?.metadata?.description && !hideType && (
               <span className="text-sm ml-2 hover:underline text-gray-500">
                 {'(' + post?.metadata?.description + ')'}
               </span>

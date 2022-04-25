@@ -30,15 +30,15 @@ const Pending: FC<Props> = ({ handle, txHash }) => {
           <div className="text-[40px]">🌿</div>
           <div>Account created successfully</div>
           <div className="pt-3">
-            <Link href='/'>
-            <a >
-              <Button
-                className="mx-auto"
-                icon={<ArrowRightIcon className="mr-1 w-4 h-4" />}
-              >
-                Explore communities
-              </Button>
-            </a>
+            <Link href="/">
+              <a>
+                <Button
+                  className="mx-auto"
+                  icon={<ArrowRightIcon className="mr-1 w-4 h-4" />}
+                >
+                  Explore communities
+                </Button>
+              </a>
             </Link>
           </div>
         </div>

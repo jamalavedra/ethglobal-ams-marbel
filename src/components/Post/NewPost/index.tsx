@@ -39,7 +39,19 @@ import {
   useNetwork,
   useSignTypedData
 } from 'wagmi'
-import { MentionTextArea } from '@components/UI/MentionTextArea'
+import { Input } from '@components/UI/Input'
+import { Form, useZodForm } from '@components/UI/Form'
+import { object, string } from 'zod'
+
+const editProfileSchema = object({
+  title: string()
+    .min(2, { message: 'Title should have at least 2 characters' })
+    .max(100, { message: 'Title should not exceed 100 characters' }),
+  website: string()
+    .url({ message: 'Invalid URL' })
+    .max(100, { message: 'Website should not exceed 100 characters' })
+    .nullable()
+})
 
 const CREATE_COMMENT_TYPED_DATA_MUTATION = gql`
   mutation CreateCommentTypedData($request: CreatePublicCommentRequest!) {
@@ -83,17 +95,12 @@ interface Props {
 }
 
 const NewComment: FC<Props> = ({ refetch, post, type }) => {
-  const [commentContent, setCommentContent] = useState<string>('')
-  const [commentContentLink, setCommentContentLink] = useState<string>('')
-
-  const [commentContentError, setCommentContentError] = useState<string>('')
   const { currentUser } = useContext(AppContext)
   const [selectedModule, setSelectedModule] =
     useState<EnabledModule>(defaultModuleData)
   const [onlyFollowers, setOnlyFollowers] = useState<boolean>(false)
   const [feeData, setFeeData] = useState<FEE_DATA_TYPE>(defaultFeeData)
   const [isUploading, setIsUploading] = useState<boolean>(false)
-  const [attachments, setAttachments] = useState<LensterAttachment[]>([])
   const { activeChain } = useNetwork()
   const { data: account } = useAccount()
   const { isLoading: signLoading, signTypedDataAsync } = useSignTypedData({
@@ -101,6 +108,15 @@ const NewComment: FC<Props> = ({ refetch, post, type }) => {
       toast.error(error?.message)
     }
   })
+
+  const form = useZodForm({
+    schema: editProfileSchema,
+    defaultValues: {
+      title: '' as string,
+      website: null
+    }
+  })
+
   const {
     data,
     error,
@@ -114,9 +130,6 @@ const NewComment: FC<Props> = ({ refetch, post, type }) => {
     'commentWithSig',
     {
       onSuccess() {
-        setCommentContent('')
-        setCommentContentLink('')
-        setAttachments([])
         setSelectedModule(defaultModuleData)
         setFeeData(defaultFeeData)
       },
@@ -178,24 +191,18 @@ const NewComment: FC<Props> = ({ refetch, post, type }) => {
     }
   )
 
-  const createComment = async () => {
+  const createComment = async (title:string, website:string|null) => {
     if (!account?.address) {
       toast.error(CONNECT_WALLET)
     } else if (activeChain?.id !== CHAIN_ID) {
       toast.error(WRONG_NETWORK)
-    } else if (commentContent.length === 0 && attachments.length === 0) {
-      setCommentContentError('Comment should not be empty!')
     } else {
-      setCommentContentError('')
       setIsUploading(true)
       const { path } = await uploadToIPFS({
         version: '1.0.0',
         metadata_id: uuidv4(),
-        description: commentContentLink,
-        content: commentContent,
-        external_url: null,
-        image: attachments.length > 0 ? attachments[0]?.item : null,
-        imageMimeType: attachments.length > 0 ? attachments[0]?.type : null,
+        description: website,
+        content: title,
         name: `Comment by @${currentUser?.handle}`,
         attributes: [
           {
@@ -204,7 +211,6 @@ const NewComment: FC<Props> = ({ refetch, post, type }) => {
             value: type
           }
         ],
-        media: attachments,
         appId: 'Marble'
       }).finally(() => setIsUploading(false))
 
@@ -239,77 +245,81 @@ const NewComment: FC<Props> = ({ refetch, post, type }) => {
               error={error}
             />
           )}
-          <p className="font-medium text-sm mb-1">Title</p>
-          <MentionTextArea
-            value={commentContent}
-            setValue={setCommentContent}
-            error={commentContentError}
-            setError={setCommentContentError}
-            placeholder=""
-          />
-          <p className="font-medium text-sm mt-3 mb-1">Link</p>
-          <MentionTextArea
-            value={commentContentLink}
-            setValue={setCommentContentLink}
-            error={commentContentError}
-            setError={setCommentContentError}
-            placeholder=""
-          />
-          <p className="text-sm text-gray-400">
-            Leave url blank to submit a question for discussion. If there is no
-            url, the text (if any) will appear at the top of the thread.
-          </p>
-          <div className="block items-center sm:flex">
-            <div className="flex items-center pt-2 ml-auto space-x-2 sm:pt-0">
-              {data?.hash && (
-                <div className="py-2">
-                  <PubIndexStatus
-                    refetch={refetch}
-                    type={type === 'comment' ? 'Comment' : 'Entry'}
-                    txHash={data?.hash}
-                  />
-                </div>
-              )}
-              {activeChain?.id !== CHAIN_ID ? (
-                <SwitchNetwork className="ml-auto" />
-              ) : (
-                <Button
-                  className="ml-auto"
-                  disabled={
-                    isUploading ||
-                    typedDataLoading ||
-                    signLoading ||
-                    writeLoading
-                  }
-                  icon={
-                    isUploading ||
-                    typedDataLoading ||
-                    signLoading ||
-                    writeLoading ? (
-                      <Spinner size="xs" />
-                    ) : type === 'community post' ? (
-                      <PencilAltIcon className="w-4 h-4" />
-                    ) : (
-                      <ChatAlt2Icon className="w-4 h-4" />
-                    )
-                  }
-                  onClick={createComment}
-                >
-                  {isUploading
-                    ? 'Uploading to IPFS'
-                    : typedDataLoading
-                    ? `Generating ${type === 'comment' ? 'Comment' : 'Post'}`
-                    : signLoading
-                    ? 'Sign'
-                    : writeLoading
-                    ? 'Send'
-                    : type === 'comment'
-                    ? 'Comment'
-                    : 'Submit'}
-                </Button>
-              )}
+          <Form
+            form={form}
+            className="space-y-4"
+            onSubmit={({title, website}) => {
+              createComment( title, website)
+            }}
+          >
+            <Input
+              label="title"
+              type="text"
+              placeholder=""
+              {...form.register('title')}
+            />
+            <Input
+              label="Website"
+              type="text"
+              placeholder=""
+              {...form.register('website')}
+            />
+
+            <p className="text-sm text-gray-400">
+              Leave url blank to submit a question for discussion. If there is
+              no url, the text (if any) will appear at the top of the thread.
+            </p>
+            <div className="block items-center sm:flex">
+              <div className="flex items-center mt-5 ml-auto space-x-2 sm:pt-0">
+                {data?.hash && (
+                  <div className="py-2">
+                    <PubIndexStatus
+                      refetch={refetch}
+                      type={type === 'comment' ? 'Comment' : 'Entry'}
+                      txHash={data?.hash}
+                    />
+                  </div>
+                )}
+                {activeChain?.id !== CHAIN_ID ? (
+                  <SwitchNetwork className="ml-auto" />
+                ) : (
+                  <Button
+                    className="ml-auto"
+                    disabled={
+                      isUploading ||
+                      typedDataLoading ||
+                      signLoading ||
+                      writeLoading
+                    }
+                    icon={
+                      isUploading ||
+                      typedDataLoading ||
+                      signLoading ||
+                      writeLoading ? (
+                        <Spinner size="xs" />
+                      ) : type === 'community post' ? (
+                        <PencilAltIcon className="w-4 h-4" />
+                      ) : (
+                        <ChatAlt2Icon className="w-4 h-4" />
+                      )
+                    }
+                  >
+                    {isUploading
+                      ? 'Uploading to IPFS'
+                      : typedDataLoading
+                      ? `Generating ${type === 'comment' ? 'Comment' : 'Entry'}`
+                      : signLoading
+                      ? 'Sign'
+                      : writeLoading
+                      ? 'Send'
+                      : type === 'comment'
+                      ? 'Comment'
+                      : 'Submit'}
+                  </Button>
+                )}
+              </div>
             </div>
-          </div>
+          </Form>
         </div>
       </div>
     </Card>

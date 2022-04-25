@@ -105,21 +105,7 @@ const Create: FC<Props> = ({ isModal = false }) => {
         placeholder="Stanni"
         {...form.register('handle')}
       />
-      <div className="space-y-1.5">
-        <div className="label">Avatar</div>
-        <div className="space-y-3">
-          {avatar && (
-            <div>
-              <img className="w-60 h-60 rounded-lg" src={avatar} alt={avatar} />
-            </div>
-          )}
-          <div>
-            <div className="flex items-center space-x-3">
-              {uploading && <Spinner size="sm" />}
-            </div>
-          </div>
-        </div>
-      </div>
+
       <div className="ml-auto">
         {activeChain?.id !== CHAIN_ID ? (
           <SwitchNetwork />

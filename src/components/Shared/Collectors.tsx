@@ -9,6 +9,7 @@ import { CollectionIcon } from '@heroicons/react/outline'
 import consoleLog from '@lib/consoleLog'
 import { FC, useState } from 'react'
 import { useInView } from 'react-cool-inview'
+import WalletProfile from '@components/Shared/WalletProfile'
 
 const COLLECTORS_QUERY = gql`
   query Collectors($request: WhoCollectedPublicationRequest!) {
@@ -72,7 +73,14 @@ const Collectors: FC<Props> = ({ pubId }) => {
     }
   })
 
-  if (loading) return <Spinner size="sm" />
+  if (loading)
+    return (
+      <div className="flex flex-grow justify-center items-center h-screen animate-pulse">
+        <span className="flex justify-center p-5">
+          <Spinner size="sm" />
+        </span>
+      </div>
+    )
 
   if (data?.whoCollectedPublication?.items?.length === 0)
     return (
@@ -84,6 +92,7 @@ const Collectors: FC<Props> = ({ pubId }) => {
         />
       </div>
     )
+  console.log(collectors)
 
   return (
     <div className="overflow-y-auto max-h-[80vh]">
@@ -96,11 +105,10 @@ const Collectors: FC<Props> = ({ pubId }) => {
         <div className="divide-y dark:divide-gray-700">
           {collectors?.map((wallet: Wallet) => (
             <div className="p-5" key={wallet?.address}>
-              {wallet?.defaultProfile && (
-                <UserProfile
-                  profile={wallet?.defaultProfile as Profile}
-                  showBio
-                />
+              {wallet?.defaultProfile ? (
+                <UserProfile profile={wallet?.defaultProfile as Profile} />
+              ) : (
+                <WalletProfile wallet={wallet} />
               )}
             </div>
           ))}

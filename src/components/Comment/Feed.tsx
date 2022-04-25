@@ -144,8 +144,7 @@ const Feed: FC<Props> = ({
                   key={`${post?.id}_${index}`}
                   index={index}
                   post={post}
-                  comments={comments}
-                  hideType
+                  hideType={comments}
                 />
               )
             )}

@@ -14,7 +14,7 @@ export default function Custom500() {
           free to contact us. In the meantime, try refreshing.
         </div>
         <Link href="/">
-          <a >
+          <a>
             <Button
               className="flex mx-auto item-center"
               size="lg"
