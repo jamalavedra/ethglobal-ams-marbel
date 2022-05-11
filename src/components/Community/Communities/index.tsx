@@ -39,13 +39,13 @@ const Communities: NextPage = () => {
   const { data, loading, error } = useQuery(COMMUNITY_QUERY, {
     variables: {
       topCommented: {
-        sources: 'Marble',
+        sources: 'Marbel',
         sortCriteria: 'TOP_COMMENTED',
         publicationTypes: ['POST'],
         limit: 8
       },
       topCollected: {
-        sources: 'Marble',
+        sources: 'Marbel',
         sortCriteria: 'TOP_COLLECTED',
         publicationTypes: ['POST'],
         limit: 8

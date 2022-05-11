@@ -1,6 +1,3 @@
-import 'linkify-plugin-mention'
-import 'linkify-plugin-hashtag'
-
 import { gql, useQuery } from '@apollo/client'
 import Collectors from '@components/Shared/Collectors'
 import { Modal } from '@components/UI/Modal'
@@ -9,10 +6,8 @@ import { LensterPost } from '@generated/lenstertypes'
 import { AnnotationIcon, UsersIcon } from '@heroicons/react/outline'
 import consoleLog from '@lib/consoleLog'
 import humanize from '@lib/humanize'
-import linkifyOptions from '@lib/linkifyOptions'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
-import Linkify from 'linkify-react'
 import React, { FC, ReactChild, useContext, useState } from 'react'
 
 import Join from './Join'
@@ -78,9 +73,7 @@ const Details: FC<Props> = ({ community }) => {
       <div className="space-y-5">
         {community?.metadata?.description && (
           <div className="mr-0 leading-7 sm:mr-10 linkify">
-            <Linkify tagName="div" options={linkifyOptions}>
-              {community?.metadata?.description}
-            </Linkify>
+            <div>{community?.metadata?.description}</div>
           </div>
         )}
         <div className="flex items-center space-x-2">

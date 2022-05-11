@@ -7,7 +7,7 @@ import { Card } from '@components/UI/Card'
 import { ErrorMessage } from '@components/UI/ErrorMessage'
 import { Spinner } from '@components/UI/Spinner'
 import AppContext from '@components/utils/AppContext'
-import { LensterAttachment, LensterPost } from '@generated/lenstertypes'
+import { LensterPost } from '@generated/lenstertypes'
 import {
   CreateCommentBroadcastItemResult,
   EnabledModule
@@ -20,6 +20,8 @@ import {
   FEE_DATA_TYPE,
   getModule
 } from '@lib/getModule'
+import { LensterAttachment } from '@generated/lenstertypes'
+import imagekitURL from '@lib/imagekitURL'
 import omit from '@lib/omit'
 import splitSignature from '@lib/splitSignature'
 import uploadToIPFS from '@lib/uploadToIPFS'
@@ -49,7 +51,7 @@ const editProfileSchema = object({
     .max(100, { message: 'Title should not exceed 100 characters' }),
   website: string()
     .url({ message: 'Invalid URL' })
-    .max(100, { message: 'Website should not exceed 100 characters' })
+    .max(200, { message: 'Website should not exceed 100 characters' })
     .nullable()
 })
 
@@ -79,9 +81,10 @@ const CREATE_COMMENT_TYPED_DATA_MUTATION = gql`
           pubIdPointed
           contentURI
           collectModule
-          collectModuleData
+          collectModuleInitData
           referenceModule
           referenceModuleData
+          referenceModuleInitData
         }
       }
     }
@@ -103,6 +106,8 @@ const NewComment: FC<Props> = ({ refetch, post, type }) => {
   const [isUploading, setIsUploading] = useState<boolean>(false)
   const { activeChain } = useNetwork()
   const { data: account } = useAccount()
+  const [attachments, setAttachments] = useState<LensterAttachment[]>([])
+
   const { isLoading: signLoading, signTypedDataAsync } = useSignTypedData({
     onError(error) {
       toast.error(error?.message)
@@ -134,6 +139,7 @@ const NewComment: FC<Props> = ({ refetch, post, type }) => {
         setFeeData(defaultFeeData)
       },
       onError(error) {
+        console.log('useContractWrite', error)
         toast.error(error?.message)
       }
     }
@@ -155,9 +161,10 @@ const NewComment: FC<Props> = ({ refetch, post, type }) => {
           pubIdPointed,
           contentURI,
           collectModule,
-          collectModuleData,
+          collectModuleInitData,
           referenceModule,
-          referenceModuleData
+          referenceModuleData,
+          referenceModuleInitData
         } = typedData?.value
 
         signTypedDataAsync({
@@ -165,6 +172,7 @@ const NewComment: FC<Props> = ({ refetch, post, type }) => {
           types: omit(typedData?.types, '__typename'),
           value: omit(typedData?.value, '__typename')
         }).then((signature) => {
+          console.log('split boi')
           const { v, r, s } = splitSignature(signature)
           const inputStruct = {
             profileId,
@@ -172,9 +180,10 @@ const NewComment: FC<Props> = ({ refetch, post, type }) => {
             pubIdPointed,
             contentURI,
             collectModule,
-            collectModuleData,
+            collectModuleInitData,
             referenceModule,
             referenceModuleData,
+            referenceModuleInitData,
             sig: {
               v,
               r,
@@ -182,16 +191,18 @@ const NewComment: FC<Props> = ({ refetch, post, type }) => {
               deadline: typedData.value.deadline
             }
           }
+          console.log(inputStruct)
           write({ args: inputStruct })
         })
       },
       onError(error) {
+        console.log('createCommentTypedData', error)
         toast.error(error.message ?? ERROR_MESSAGE)
       }
     }
   )
 
-  const createComment = async (title:string, website:string|null) => {
+  const createComment = async (title: string, website: string | null) => {
     if (!account?.address) {
       toast.error(CONNECT_WALLET)
     } else if (activeChain?.id !== CHAIN_ID) {
@@ -203,6 +214,9 @@ const NewComment: FC<Props> = ({ refetch, post, type }) => {
         metadata_id: uuidv4(),
         description: website,
         content: title,
+        external_url: null,
+        image: null,
+        imageMimeType: null,
         name: `Comment by @${currentUser?.handle}`,
         attributes: [
           {
@@ -211,9 +225,10 @@ const NewComment: FC<Props> = ({ refetch, post, type }) => {
             value: type
           }
         ],
-        appId: 'Marble'
+        media: attachments,
+        appId: 'Marbel'
       }).finally(() => setIsUploading(false))
-
+      console.log('before createCommentTypedData')
       createCommentTypedData({
         variables: {
           request: {
@@ -248,8 +263,8 @@ const NewComment: FC<Props> = ({ refetch, post, type }) => {
           <Form
             form={form}
             className="space-y-4"
-            onSubmit={({title, website}) => {
-              createComment( title, website)
+            onSubmit={({ title, website }) => {
+              createComment(title, website)
             }}
           >
             <Input

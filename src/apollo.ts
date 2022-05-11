@@ -6,18 +6,24 @@ import {
 } from '@apollo/client'
 import result from '@generated/types'
 import consoleLog from '@lib/consoleLog'
+import Cookies, { CookieAttributes } from 'js-cookie'
 import jwtDecode from 'jwt-decode'
 
 import { API_URL, ERROR_MESSAGE } from './constants'
 
+export const COOKIE_CONFIG: CookieAttributes = {
+  sameSite: 'None',
+  secure: true
+}
+
 const REFRESH_AUTHENTICATION_MUTATION = `
-    mutation Refresh($request: RefreshRequest!) {
-      refresh(request: $request) {
-        accessToken
-        refreshToken
-      }
+  mutation Refresh($request: RefreshRequest!) {
+    refresh(request: $request) {
+      accessToken
+      refreshToken
     }
-  `
+  }
+`
 
 const httpLink = new HttpLink({
   uri: API_URL,
@@ -25,22 +31,22 @@ const httpLink = new HttpLink({
 })
 
 const authLink = new ApolloLink((operation, forward) => {
-  const token = localStorage.accessToken
+  const accessToken = Cookies.get('accessToken')
 
-  if (token === 'undefined' || !token) {
-    localStorage.removeItem('accessToken')
-    localStorage.removeItem('refreshToken')
+  if (accessToken === 'undefined' || !accessToken) {
+    Cookies.remove('accessToken')
+    Cookies.remove('refreshToken')
     localStorage.removeItem('selectedProfile')
 
     return forward(operation)
   } else {
     operation.setContext({
       headers: {
-        'x-access-token': token ? `Bearer ${token}` : ''
+        'x-access-token': accessToken ? `Bearer ${accessToken}` : ''
       }
     })
 
-    const { exp }: { exp: number } = jwtDecode(token)
+    const { exp }: { exp: number } = jwtDecode(accessToken)
 
     if (Date.now() >= exp * 1000) {
       consoleLog('Auth', '#eab308', 'Generate new access token')
@@ -51,7 +57,7 @@ const authLink = new ApolloLink((operation, forward) => {
           operationName: 'Refresh',
           query: REFRESH_AUTHENTICATION_MUTATION,
           variables: {
-            request: { refreshToken: localStorage.refreshToken }
+            request: { refreshToken: Cookies.get('refreshToken') }
           }
         })
       })
@@ -59,13 +65,21 @@ const authLink = new ApolloLink((operation, forward) => {
         .then((res) => {
           operation.setContext({
             headers: {
-              'x-access-token': token
+              'x-access-token': accessToken
                 ? `Bearer ${res?.data?.refresh?.accessToken}`
                 : ''
             }
           })
-          localStorage.setItem('accessToken', res?.data?.refresh?.accessToken)
-          localStorage.setItem('refreshToken', res?.data?.refresh?.refreshToken)
+          Cookies.set(
+            'accessToken',
+            res?.data?.refresh?.accessToken,
+            COOKIE_CONFIG
+          )
+          Cookies.set(
+            'refreshToken',
+            res?.data?.refresh?.refreshToken,
+            COOKIE_CONFIG
+          )
         })
         .catch(() => console.log(ERROR_MESSAGE))
     }

@@ -5,7 +5,7 @@ import { Spinner } from '@components/UI/Spinner'
 import AppContext from '@components/utils/AppContext'
 import { LensterPost } from '@generated/lenstertypes'
 import { CreateMirrorBroadcastItemResult } from '@generated/types'
-import { ChevronUpIcon } from '@heroicons/react/outline'
+import { ChevronUpIcon } from '@heroicons/react/solid'
 import consoleLog from '@lib/consoleLog'
 import humanize from '@lib/humanize'
 import omit from '@lib/omit'
@@ -53,6 +53,7 @@ const CREATE_MIRROR_TYPED_DATA_MUTATION = gql`
           pubIdPointed
           referenceModule
           referenceModuleData
+          referenceModuleInitData
         }
       }
     }
@@ -80,10 +81,10 @@ const Mirror: FC<Props> = ({ post }) => {
     'mirrorWithSig',
     {
       onSuccess() {
-        toast.success('Post has been upvoted!')
+        toast.success('Post has been mirrored!')
       },
-      onError(error) {
-        toast.error(error?.message)
+      onError(error: any) {
+        toast.error(error?.data?.message ?? error?.message)
       }
     }
   )
@@ -103,7 +104,8 @@ const Mirror: FC<Props> = ({ post }) => {
           profileIdPointed,
           pubIdPointed,
           referenceModule,
-          referenceModuleData
+          referenceModuleData,
+          referenceModuleInitData
         } = typedData?.value
 
         signTypedDataAsync({
@@ -118,6 +120,7 @@ const Mirror: FC<Props> = ({ post }) => {
             pubIdPointed,
             referenceModule,
             referenceModuleData,
+            referenceModuleInitData,
             sig: {
               v,
               r,

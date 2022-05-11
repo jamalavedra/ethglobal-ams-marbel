@@ -15,7 +15,6 @@ import { FC, Fragment, useContext, useState } from 'react'
 import { CHAIN_ID } from 'src/constants'
 import { useDisconnect, useNetwork } from 'wagmi'
 
-import Slug from '../Slug'
 import Login from './Login'
 
 export const NextLink = ({ href, children, ...rest }: Record<string, any>) => (

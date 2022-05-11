@@ -8,7 +8,9 @@ import { XCircleIcon } from '@heroicons/react/solid'
 import consoleLog from '@lib/consoleLog'
 import getWalletLogo from '@lib/getWalletLogo'
 import clsx from 'clsx'
+import Cookies from 'js-cookie'
 import React, { Dispatch, FC, useContext, useEffect, useState } from 'react'
+import { COOKIE_CONFIG } from 'src/apollo'
 import { CHAIN_ID, ERROR_MESSAGE } from 'src/constants'
 import {
   Connector,
@@ -94,13 +96,15 @@ const WalletSelector: FC<Props> = ({ setHasConnected, setHasProfile }) => {
               request: { address: accountData?.address, signature }
             }
           }).then((res) => {
-            localStorage.setItem(
+            Cookies.set(
               'accessToken',
-              res.data.authenticate.accessToken
+              res.data.authenticate.accessToken,
+              COOKIE_CONFIG
             )
-            localStorage.setItem(
+            Cookies.set(
               'refreshToken',
-              res.data.authenticate.refreshToken
+              res.data.authenticate.refreshToken,
+              COOKIE_CONFIG
             )
             getProfiles({
               variables: { ownedBy: accountData?.address }
@@ -134,7 +138,9 @@ const WalletSelector: FC<Props> = ({ setHasConnected, setHasProfile }) => {
               <Spinner className="mr-0.5" size="xs" />
             ) : (
               <img
-                className="mr-1 h-5"
+                className="mr-1 w-5 h-5"
+                height={20}
+                width={20}
                 src="/eth-white.svg"
                 alt="Ethereum Logo"
               />
@@ -162,8 +168,11 @@ const WalletSelector: FC<Props> = ({ setHasConnected, setHasProfile }) => {
             type="button"
             key={x.id}
             className={clsx(
-              { 'hover:bg-gray-100': x.id !== accountData?.connector?.id },
-              'w-full flex items-center space-x-2.5 justify-center px-4 py-3 overflow-hidden rounded-md border outline-none border-gray-200'
+              {
+                'hover:bg-gray-100 dark:hover:bg-gray-700':
+                  x.id !== accountData?.connector?.id
+              },
+              'w-full flex items-center space-x-2.5 justify-center px-4 py-3 overflow-hidden rounded-xl border dark:border-gray-700/80 outline-none'
             )}
             onClick={() => onConnect(x)}
             disabled={
@@ -182,6 +191,8 @@ const WalletSelector: FC<Props> = ({ setHasConnected, setHasProfile }) => {
               src={getWalletLogo(x.name)}
               draggable={false}
               className="w-6 h-6"
+              height={24}
+              width={24}
               alt={x.id}
             />
           </button>

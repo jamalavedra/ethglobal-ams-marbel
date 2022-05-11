@@ -28,10 +28,12 @@ const PostBody: FC<Props> = ({ post, hideType }) => {
           })}
         >
           <a
-            target={post?.metadata?.description?'_blank':'_self'}
+            target={post?.metadata?.description ? '_blank' : '_self'}
             rel="noreferrer"
             href={
-              post?.metadata?.description ? post?.metadata?.description : '/posts/'+post.id
+              post?.metadata?.description
+                ? post?.metadata?.description
+                : '/posts/' + post.id
             }
             className={`leading-7 whitespace-pre-wrap break-words linkify ${
               hideType ? 'pointer-events-none cursor-defaulto' : ''

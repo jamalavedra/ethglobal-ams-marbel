@@ -1,7 +1,3 @@
-// Types
-import { Community } from '@generated/lenstertypes'
-import { ApolloServer } from 'apollo-server'
-
 export const getFeed = async (id) => {
   // const { data } = useQuery(COMMUNITY_QUERY, {
   //   variables: { request: { publicationId: id } },

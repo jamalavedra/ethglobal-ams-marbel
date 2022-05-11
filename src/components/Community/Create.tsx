@@ -36,6 +36,7 @@ import {
 } from 'wagmi'
 import { object, string } from 'zod'
 import { gql } from '@apollo/client'
+import { NextPage } from 'next'
 
 export const CREATE_POST_TYPED_DATA_MUTATION = gql`
   mutation CreatePostTypedData($request: CreatePublicPostRequest!) {
@@ -61,9 +62,9 @@ export const CREATE_POST_TYPED_DATA_MUTATION = gql`
           profileId
           contentURI
           collectModule
-          collectModuleData
+          collectModuleInitData
           referenceModule
-          referenceModuleData
+          referenceModuleInitData
         }
       }
     }
@@ -79,7 +80,7 @@ const newCommunitySchema = object({
     .nullable()
 })
 
-const Create: FC = () => {
+const Create: NextPage = () => {
   const [avatar, setAvatar] = useState<string>()
   const [avatarType, setAvatarType] = useState<string>()
   const [isUploading, setIsUploading] = useState<boolean>(false)
@@ -126,9 +127,9 @@ const Create: FC = () => {
           profileId,
           contentURI,
           collectModule,
-          collectModuleData,
+          collectModuleInitData,
           referenceModule,
-          referenceModuleData
+          referenceModuleInitData
         } = typedData?.value
 
         signTypedDataAsync({
@@ -141,9 +142,9 @@ const Create: FC = () => {
             profileId,
             contentURI,
             collectModule,
-            collectModuleData,
+            collectModuleInitData,
             referenceModule,
-            referenceModuleData,
+            referenceModuleInitData,
             sig: {
               v,
               r,
@@ -184,9 +185,8 @@ const Create: FC = () => {
           }
         ],
         media: [],
-        appId: 'Marble'
+        appId: 'Marbel'
       }).finally(() => setIsUploading(false))
-
       createPostTypedData({
         variables: {
           request: {

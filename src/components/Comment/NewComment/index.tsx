@@ -5,6 +5,7 @@ import SwitchNetwork from '@components/Shared/SwitchNetwork'
 import { Button } from '@components/UI/Button'
 import { Card } from '@components/UI/Card'
 import { ErrorMessage } from '@components/UI/ErrorMessage'
+import { MentionTextArea } from '@components/UI/MentionTextArea'
 import { Spinner } from '@components/UI/Spinner'
 import AppContext from '@components/utils/AppContext'
 import { LensterAttachment, LensterPost } from '@generated/lenstertypes'
@@ -39,7 +40,6 @@ import {
   useNetwork,
   useSignTypedData
 } from 'wagmi'
-import { MentionTextArea } from '@components/UI/MentionTextArea'
 
 const CREATE_COMMENT_TYPED_DATA_MUTATION = gql`
   mutation CreateCommentTypedData($request: CreatePublicCommentRequest!) {
@@ -67,9 +67,10 @@ const CREATE_COMMENT_TYPED_DATA_MUTATION = gql`
           pubIdPointed
           contentURI
           collectModule
-          collectModuleData
+          collectModuleInitData
           referenceModule
           referenceModuleData
+          referenceModuleInitData
         }
       }
     }
@@ -117,8 +118,8 @@ const NewComment: FC<Props> = ({ refetch, post, type }) => {
         setSelectedModule(defaultModuleData)
         setFeeData(defaultFeeData)
       },
-      onError(error) {
-        toast.error(error?.message)
+      onError(error: any) {
+        toast.error(error?.data?.message ?? error?.message)
       }
     }
   )
@@ -139,9 +140,10 @@ const NewComment: FC<Props> = ({ refetch, post, type }) => {
           pubIdPointed,
           contentURI,
           collectModule,
-          collectModuleData,
+          collectModuleInitData,
           referenceModule,
-          referenceModuleData
+          referenceModuleData,
+          referenceModuleInitData
         } = typedData?.value
 
         signTypedDataAsync({
@@ -156,9 +158,10 @@ const NewComment: FC<Props> = ({ refetch, post, type }) => {
             pubIdPointed,
             contentURI,
             collectModule,
-            collectModuleData,
+            collectModuleInitData,
             referenceModule,
             referenceModuleData,
+            referenceModuleInitData,
             sig: {
               v,
               r,
@@ -174,7 +177,6 @@ const NewComment: FC<Props> = ({ refetch, post, type }) => {
       }
     }
   )
-
   const createComment = async () => {
     if (!account?.address) {
       toast.error(CONNECT_WALLET)
@@ -202,7 +204,7 @@ const NewComment: FC<Props> = ({ refetch, post, type }) => {
           }
         ],
         media: attachments,
-        appId: 'Marble'
+        appId: 'Marbel'
       }).finally(() => setIsUploading(false))
 
       createCommentTypedData({

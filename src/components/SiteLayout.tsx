@@ -1,12 +1,13 @@
 import { gql, useQuery } from '@apollo/client'
 import { Profile } from '@generated/types'
+import { MinimalProfileFields } from '@gql/MinimalProfileFields'
 import consoleLog from '@lib/consoleLog'
+import Cookies from 'js-cookie'
 import Head from 'next/head'
 import { useTheme } from 'next-themes'
 import { FC, ReactNode, useEffect, useState } from 'react'
 import { Toaster } from 'react-hot-toast'
 import { useAccount, useConnect, useDisconnect } from 'wagmi'
-import { MinimalProfileFields } from '@gql/MinimalProfileFields'
 
 import Loading from './Loading'
 import Navbar from './Shared/Navbar'
@@ -51,14 +52,15 @@ const SiteLayout: FC<Props> = ({ children }) => {
   const profiles: Profile[] = data?.profiles?.items
     ?.slice()
     ?.sort((a: Profile, b: Profile) => Number(a.id) - Number(b.id))
+    ?.sort((a: Profile, b: Profile) =>
+      !(a.isDefault !== b.isDefault) ? 0 : a.isDefault ? -1 : 1
+    )
 
   useEffect(() => {
-    setTimeout(() => {
-      setPageLoading(false)
-    }, 500)
+    setRefreshToken(Cookies.get('refreshToken'))
     setSelectedProfile(localStorage.selectedProfile)
-    setRefreshToken(localStorage.refreshToken)
     setStaffMode(localStorage.staffMode === 'true')
+    setPageLoading(false)
 
     if (!activeConnector) {
       disconnect()
@@ -66,8 +68,8 @@ const SiteLayout: FC<Props> = ({ children }) => {
 
     activeConnector?.on('change', () => {
       localStorage.removeItem('selectedProfile')
-      localStorage.removeItem('accessToken')
-      localStorage.removeItem('refreshToken')
+      Cookies.remove('accessToken')
+      Cookies.remove('refreshToken')
       disconnect()
     })
   }, [selectedProfile, activeConnector, disconnect])

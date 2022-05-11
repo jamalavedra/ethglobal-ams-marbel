@@ -25,7 +25,7 @@ interface Props {
 
 const SinglePost: FC<Props> = ({
   post,
-  index=0,
+  index = 0,
   postPage = false,
   hideType = false
 }) => {
