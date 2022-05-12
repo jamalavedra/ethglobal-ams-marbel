@@ -149,7 +149,7 @@ export default function Welcome() {
                 <div className="mt-8">
                   <Button
                     size="lg"
-                    variant="none"
+                    variant="success"
                     onClick={() =>
                       step < 4 ? setStep((step) => step + 1) : null
                     }
