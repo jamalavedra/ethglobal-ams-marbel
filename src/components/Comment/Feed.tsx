@@ -14,14 +14,32 @@ import dynamic from 'next/dynamic'
 
 const NewPostModal = dynamic(() => import('../Post/NewPost/Modal'))
 
+function diff_hours(dt2:any, dt1:any) 
+ {
+
+  var diff =(dt2.getTime() - dt1.getTime()) / 1000;
+  diff /= (60 * 60);
+  return Math.abs(Math.round(diff));
+  
+ }
+
+function calculateScore(votes:number, itemHourAge:number, gravity:number) {
+  if (gravity == null) {
+    gravity = 1.8;
+  }
+  return (votes - 1) / Math.pow((itemHourAge + 2), gravity);
+}
+
+
+
 function descendingComparator(
   a: { [key: string]: { [key: string]: any[] } },
   b: { [key: string]: { [key: string]: any[] } }
 ) {
-  if (b['stats']['totalAmountOfMirrors'] < a['stats']['totalAmountOfMirrors']) {
+  if (b['score'] < a['score']) {
     return -1
   }
-  if (b['stats']['totalAmountOfMirrors'] > a['stats']['totalAmountOfMirrors']) {
+  if (b['score'] > a['score']) {
     return 1
   }
   return 0
@@ -34,7 +52,7 @@ function getComparator(order: string) {
 }
 
 function stableSort(array: any[], comparator: any) {
-  const stabilizedThis = array.map((el, index) => [el, index])
+  const stabilizedThis = array.map((el, index) => [{score:calculateScore(el['stats']['totalAmountOfMirrors'],diff_hours(new Date(el['createdAt']), new Date()),1.8),...el}, index])
   stabilizedThis.sort((a, b) => {
     const order = comparator(a[0], b[0])
     if (order !== 0) return order
