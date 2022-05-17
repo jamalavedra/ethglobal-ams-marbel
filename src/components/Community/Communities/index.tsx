@@ -3,7 +3,7 @@ import { GridItemSix, GridLayout } from '@components/GridLayout'
 import { Button } from '@components/UI/Button'
 import { PageLoading } from '@components/UI/PageLoading'
 import { CommunityFields } from '@gql/CommunityFields'
-import { FireIcon, GlobeAltIcon, PlusIcon } from '@heroicons/react/outline'
+import { FireIcon, PlusIcon } from '@heroicons/react/outline'
 import consoleLog from '@lib/consoleLog'
 import { NextPage } from 'next'
 import React from 'react'
@@ -82,18 +82,6 @@ const Communities: NextPage = () => {
               <div className="hidden flex-1 flex-shrink-0 w-full sm:block" />
             </div>
             <div className="flex">
-              <Button
-                className="mr-2"
-                outline
-                icon={<GlobeAltIcon className="w-4 h-4" />}
-              >
-                <Link href={'/communities/0x05e1-0x09'}>
-                  <a href={'/communities/0x05e1-0x09'}>
-                    {'Explore a Community'}
-                  </a>
-                </Link>
-              </Button>
-
               <Button icon={<PlusIcon className="w-4 h-4" />}>
                 <Link href={'/create/community'}>
                   <a href={'/create/community'}>{'Create Community'}</a>

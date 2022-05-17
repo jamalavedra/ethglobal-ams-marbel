@@ -24,10 +24,7 @@ function diff_hours(dt2:any, dt1:any)
  }
 
 function calculateScore(votes:number, itemHourAge:number, gravity:number) {
-  if (gravity == null) {
-    gravity = 1.8;
-  }
-  return (votes - 1) / Math.pow((itemHourAge + 2), gravity);
+  return (votes ) / Math.pow((itemHourAge + 2), gravity);
 }
 
 
