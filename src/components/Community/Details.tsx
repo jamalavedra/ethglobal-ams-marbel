@@ -76,7 +76,7 @@ const Details: FC<Props> = ({ community }) => {
             <div>{community?.metadata?.description}</div>
           </div>
         )}
-        <div className="flex items-center space-x-2">
+        {/* <div className="flex items-center space-x-2">
           {joinLoading ? (
             <div className="w-28 rounded-lg h-[34px] shimmer" />
           ) : joined ? (
@@ -86,9 +86,9 @@ const Details: FC<Props> = ({ community }) => {
           ) : (
             <Join community={community} setJoined={setJoined} />
           )}
-        </div>
+        </div> */}
         <div className="space-y-2">
-          <MetaDetails icon={<UsersIcon className="w-4 h-4" />}>
+          {/* <MetaDetails icon={<UsersIcon className="w-4 h-4" />}>
             <>
               <button
                 type="button"
@@ -108,7 +108,7 @@ const Details: FC<Props> = ({ community }) => {
                 <Collectors pubId={community.id} />
               </Modal>
             </>
-          </MetaDetails>
+          </MetaDetails> */}
           <MetaDetails icon={<AnnotationIcon className="w-4 h-4" />}>
             <>
               {humanize(community?.stats?.totalAmountOfComments)}{' '}

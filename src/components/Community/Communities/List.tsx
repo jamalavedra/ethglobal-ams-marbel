@@ -10,7 +10,7 @@ interface Props {
 const List: FC<Props> = ({ communities }) => {
   return (
     <Card className="p-4">
-      <CardBody className="space-y-6">
+      <CardBody>
         {communities.map((community: Community) => (
           <div key={community?.id}>
             <CommunityProfile community={community} />

@@ -10,9 +10,9 @@ interface Props {
 
 const CommunityProfile: FC<Props> = ({ community }) => {
   return (
-    <div className="flex justify-between items-center">
+    <div className="flex justify-between items-center ">
       <Link href={`/communities/${community?.id}`}>
-        <a href={`/communities/${community?.id}`}>
+        <a href={`/communities/${community?.id}`} className='w-full hover:bg-gray-50 p-2 rounded-sm h-16'>
           <div className="flex items-center space-x-3">
             <div className="space-y-1">
               <div className="">{community?.metadata?.name}</div>
@@ -20,13 +20,13 @@ const CommunityProfile: FC<Props> = ({ community }) => {
                 {community?.metadata?.description}
               </div>
 
-              <div className="flex items-center space-x-1 text-sm">
+              {/* <div className="flex items-center space-x-1 text-sm">
                 <UsersIcon className="w-3 h-3" />
                 <div>
                   {humanize(community?.stats?.totalAmountOfCollects)}{' '}
                   {'members'}
                 </div>
-              </div>
+              </div> */}
             </div>
           </div>
         </a>
