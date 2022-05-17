@@ -164,6 +164,8 @@ const Feed: FC<Props> = ({
               )
             )}
           </div>
+          <p className='text-gray-400 text-sm'>Posts ranked with <a href='https://medium.com/hacking-and-gonzo/how-hacker-news-ranking-algorithm-works-1d9b0cf2c08d#.x86yaez0u' target="_blank" rel="noreferrer noopener" className='text-red-300 font-medium pointer hover:underline'>the hackernews algorithm</a></p>
+
           {pageInfo?.next && (
             <span ref={observe} className="flex justify-center p-5">
               <Spinner size="sm" />
@@ -181,3 +183,4 @@ const Feed: FC<Props> = ({
 }
 
 export default Feed
+ 
