@@ -37,6 +37,7 @@ import {
 import { object, string } from 'zod'
 import { gql } from '@apollo/client'
 import { NextPage } from 'next'
+import trackEvent from '@lib/trackEvent'
 
 export const CREATE_POST_TYPED_DATA_MUTATION = gql`
   mutation CreatePostTypedData($request: CreatePublicPostRequest!) {
@@ -103,6 +104,9 @@ const Create: NextPage = () => {
     },
     'postWithSig',
     {
+      onSuccess() {
+        trackEvent('new community', 'create')
+      },
       onError(error) {
         toast.error(error?.message)
       }

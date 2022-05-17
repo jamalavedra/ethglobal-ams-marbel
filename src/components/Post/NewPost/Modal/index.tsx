@@ -2,7 +2,7 @@ import { Modal } from '@components/UI/Modal'
 import { PencilAltIcon } from '@heroicons/react/outline'
 import { FC, useState } from 'react'
 import { Button } from '@components/UI/Button'
-
+import trackEvent from '@lib/trackEvent'
 import NewPost from '..'
 import { LensterPost } from '@generated/lenstertypes'
 
@@ -17,6 +17,8 @@ const NewPostModal: FC<Props> = ({ post }) => {
     <>
       <Button
         onClick={() => {
+          trackEvent('new post modal')
+
           setShowModal(!showModal)
         }}
         icon={<PencilAltIcon className="w-4 h-4" />}

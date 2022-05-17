@@ -40,6 +40,7 @@ import {
   useNetwork,
   useSignTypedData
 } from 'wagmi'
+import trackEvent from '@lib/trackEvent'
 
 const CREATE_COMMENT_TYPED_DATA_MUTATION = gql`
   mutation CreateCommentTypedData($request: CreatePublicCommentRequest!) {
@@ -117,6 +118,7 @@ const NewComment: FC<Props> = ({ refetch, post, type }) => {
         setAttachments([])
         setSelectedModule(defaultModuleData)
         setFeeData(defaultFeeData)
+        trackEvent('new comment', 'create')
       },
       onError(error: any) {
         toast.error(error?.data?.message ?? error?.message)

@@ -21,7 +21,6 @@ import {
   getModule
 } from '@lib/getModule'
 import { LensterAttachment } from '@generated/lenstertypes'
-import imagekitURL from '@lib/imagekitURL'
 import omit from '@lib/omit'
 import splitSignature from '@lib/splitSignature'
 import uploadToIPFS from '@lib/uploadToIPFS'
@@ -44,6 +43,7 @@ import {
 import { Input } from '@components/UI/Input'
 import { Form, useZodForm } from '@components/UI/Form'
 import { object, string } from 'zod'
+import trackEvent from '@lib/trackEvent'
 
 const editProfileSchema = object({
   title: string()
@@ -137,6 +137,7 @@ const NewComment: FC<Props> = ({ refetch, post, type }) => {
       onSuccess() {
         setSelectedModule(defaultModuleData)
         setFeeData(defaultFeeData)
+        trackEvent('new post', 'create')
       },
       onError(error) {
         console.log('useContractWrite', error)
@@ -172,7 +173,6 @@ const NewComment: FC<Props> = ({ refetch, post, type }) => {
           types: omit(typedData?.types, '__typename'),
           value: omit(typedData?.value, '__typename')
         }).then((signature) => {
-          console.log('split boi')
           const { v, r, s } = splitSignature(signature)
           const inputStruct = {
             profileId,
@@ -191,7 +191,6 @@ const NewComment: FC<Props> = ({ refetch, post, type }) => {
               deadline: typedData.value.deadline
             }
           }
-          console.log(inputStruct)
           write({ args: inputStruct })
         })
       },
