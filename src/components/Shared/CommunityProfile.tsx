@@ -12,7 +12,10 @@ const CommunityProfile: FC<Props> = ({ community }) => {
   return (
     <div className="flex justify-between items-center ">
       <Link href={`/communities/${community?.id}`}>
-        <a href={`/communities/${community?.id}`} className='w-full hover:bg-gray-50 p-2 rounded-sm h-16'>
+        <a
+          href={`/communities/${community?.id}`}
+          className="w-full hover:bg-gray-50 p-2 rounded-sm h-16"
+        >
           <div className="flex items-center space-x-3">
             <div className="space-y-1">
               <div className="">{community?.metadata?.name}</div>

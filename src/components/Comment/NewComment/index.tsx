@@ -31,6 +31,7 @@ import {
   CONNECT_WALLET,
   ERROR_MESSAGE,
   LENSHUB_PROXY,
+  RELAY_ON,
   WRONG_NETWORK
 } from 'src/constants'
 import { v4 as uuidv4 } from 'uuid'
@@ -41,6 +42,7 @@ import {
   useSignTypedData
 } from 'wagmi'
 import trackEvent from '@lib/trackEvent'
+import { BROADCAST_MUTATION } from '@gql/BroadcastMutation'
 
 const CREATE_COMMENT_TYPED_DATA_MUTATION = gql`
   mutation CreateCommentTypedData($request: CreatePublicCommentRequest!) {
@@ -101,6 +103,15 @@ const NewComment: FC<Props> = ({ refetch, post, type }) => {
       toast.error(error?.message)
     }
   })
+
+  const onCompleted = () => {
+    setCommentContent('')
+    setAttachments([])
+    setSelectedModule(defaultModuleData)
+    setFeeData(defaultFeeData)
+    trackEvent('new comment', 'create')
+  }
+
   const {
     data,
     error,
@@ -114,17 +125,25 @@ const NewComment: FC<Props> = ({ refetch, post, type }) => {
     'commentWithSig',
     {
       onSuccess() {
-        setCommentContent('')
-        setAttachments([])
-        setSelectedModule(defaultModuleData)
-        setFeeData(defaultFeeData)
-        trackEvent('new comment', 'create')
+        onCompleted()
       },
       onError(error: any) {
         toast.error(error?.data?.message ?? error?.message)
       }
     }
   )
+
+  const [broadcast, { data: broadcastData, loading: broadcastLoading }] =
+    useMutation(BROADCAST_MUTATION, {
+      onCompleted({ broadcast }) {
+        if (broadcast?.reason !== 'NOT_ALLOWED') {
+          onCompleted()
+        }
+      },
+      onError(error) {
+        consoleLog('Relay Error', '#ef4444', error.message)
+      }
+    })
 
   const [createCommentTypedData, { loading: typedDataLoading }] = useMutation(
     CREATE_COMMENT_TYPED_DATA_MUTATION,
@@ -135,7 +154,7 @@ const NewComment: FC<Props> = ({ refetch, post, type }) => {
         createCommentTypedData: CreateCommentBroadcastItemResult
       }) {
         consoleLog('Mutation', '#4ade80', 'Generated createCommentTypedData')
-        const { typedData } = createCommentTypedData
+        const { id, typedData } = createCommentTypedData
         const {
           profileId,
           profileIdPointed,
@@ -171,7 +190,17 @@ const NewComment: FC<Props> = ({ refetch, post, type }) => {
               deadline: typedData.value.deadline
             }
           }
-          write({ args: inputStruct })
+          if (RELAY_ON) {
+            broadcast({ variables: { request: { id, signature } } }).then(
+              ({ data: { broadcast }, errors }) => {
+                if (errors || broadcast?.reason === 'NOT_ALLOWED') {
+                  write({ args: inputStruct })
+                }
+              }
+            )
+          } else {
+            write({ args: inputStruct })
+          }
         })
       },
       onError(error) {
@@ -249,13 +278,15 @@ const NewComment: FC<Props> = ({ refetch, post, type }) => {
           />
           <div className="block items-center sm:flex">
             <div className="flex items-center pt-2 ml-auto space-x-2 sm:pt-0">
-              {data?.hash && (
+              {data?.hash ?? broadcastData?.broadcast?.txHash ? (
                 <PubIndexStatus
                   refetch={refetch}
                   type={type === 'comment' ? 'Comment' : 'Post'}
-                  txHash={data?.hash}
+                  txHash={
+                    data?.hash ? data?.hash : broadcastData?.broadcast?.txHash
+                  }
                 />
-              )}
+              ) : null}
               {activeChain?.id !== CHAIN_ID ? (
                 <SwitchNetwork className="ml-auto" />
               ) : (
@@ -265,12 +296,14 @@ const NewComment: FC<Props> = ({ refetch, post, type }) => {
                     isUploading ||
                     typedDataLoading ||
                     signLoading ||
-                    writeLoading
+                    writeLoading ||
+                    broadcastLoading
                   }
                   icon={
                     isUploading ||
                     typedDataLoading ||
                     signLoading ||
+                    broadcastLoading ||
                     writeLoading ? (
                       <Spinner size="xs" />
                     ) : type === 'community post' ? (

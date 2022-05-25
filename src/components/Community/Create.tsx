@@ -17,12 +17,13 @@ import consoleLog from '@lib/consoleLog'
 import omit from '@lib/omit'
 import splitSignature from '@lib/splitSignature'
 import uploadToIPFS from '@lib/uploadToIPFS'
-import React, { FC, useContext, useState } from 'react'
+import React, { useContext, useState } from 'react'
 import toast from 'react-hot-toast'
 import {
   CHAIN_ID,
   CONNECT_WALLET,
   ERROR_MESSAGE,
+  RELAY_ON,
   LENSHUB_PROXY,
   WRONG_NETWORK
 } from 'src/constants'
@@ -38,6 +39,7 @@ import { object, string } from 'zod'
 import { gql } from '@apollo/client'
 import { NextPage } from 'next'
 import trackEvent from '@lib/trackEvent'
+import { BROADCAST_MUTATION } from '@gql/BroadcastMutation'
 
 export const CREATE_POST_TYPED_DATA_MUTATION = gql`
   mutation CreatePostTypedData($request: CreatePublicPostRequest!) {
@@ -93,6 +95,9 @@ const Create: NextPage = () => {
       toast.error(error?.message)
     }
   })
+  const onCompleted = () => {
+    trackEvent('new community', 'create')
+  }
   const {
     data,
     isLoading: writeLoading,
@@ -105,7 +110,7 @@ const Create: NextPage = () => {
     'postWithSig',
     {
       onSuccess() {
-        trackEvent('new community', 'create')
+        onCompleted()
       },
       onError(error) {
         toast.error(error?.message)
@@ -117,6 +122,18 @@ const Create: NextPage = () => {
     schema: newCommunitySchema
   })
 
+  const [broadcast, { data: broadcastData, loading: broadcastLoading }] =
+    useMutation(BROADCAST_MUTATION, {
+      onCompleted({ broadcast }) {
+        if (broadcast?.reason !== 'NOT_ALLOWED') {
+          onCompleted()
+        }
+      },
+      onError(error) {
+        consoleLog('Relay Error', '#ef4444', error.message)
+      }
+    })
+
   const [createPostTypedData, { loading: typedDataLoading }] = useMutation(
     CREATE_POST_TYPED_DATA_MUTATION,
     {
@@ -126,7 +143,7 @@ const Create: NextPage = () => {
         createPostTypedData: CreatePostBroadcastItemResult
       }) {
         consoleLog('Mutation', '#4ade80', 'Generated createPostTypedData')
-        const { typedData } = createPostTypedData
+        const { id, typedData } = createPostTypedData
         const {
           profileId,
           contentURI,
@@ -142,6 +159,8 @@ const Create: NextPage = () => {
           value: omit(typedData?.value, '__typename')
         }).then((signature) => {
           const { v, r, s } = splitSignature(signature)
+
+          const sig = { v, r, s, deadline: typedData.value.deadline }
           const inputStruct = {
             profileId,
             contentURI,
@@ -149,14 +168,19 @@ const Create: NextPage = () => {
             collectModuleInitData,
             referenceModule,
             referenceModuleInitData,
-            sig: {
-              v,
-              r,
-              s,
-              deadline: typedData.value.deadline
-            }
+            sig
           }
-          write({ args: inputStruct })
+          if (RELAY_ON) {
+            broadcast({ variables: { request: { id, signature } } }).then(
+              ({ data: { broadcast }, errors }) => {
+                if (errors || broadcast?.reason === 'NOT_ALLOWED') {
+                  write({ args: inputStruct })
+                }
+              }
+            )
+          } else {
+            write({ args: inputStruct })
+          }
         })
       },
       onError(error) {
@@ -220,9 +244,11 @@ const Create: NextPage = () => {
           description="Communities is where links are shared, commented and upvoted"
         />
         <Card>
-          {data?.hash ? (
+          {data?.hash ?? broadcastData?.broadcast?.txHash ? (
             <Pending
-              txHash={data?.hash}
+              txHash={
+                data?.hash ? data?.hash : broadcastData?.broadcast?.txHash
+              }
               indexing="Community creation in progress, please wait!"
               indexed="Community created successfully"
               type="community"
@@ -258,12 +284,14 @@ const Create: NextPage = () => {
                       typedDataLoading ||
                       isUploading ||
                       signLoading ||
-                      writeLoading
+                      writeLoading ||
+                      broadcastLoading
                     }
                     icon={
                       typedDataLoading ||
                       isUploading ||
                       signLoading ||
+                      broadcastLoading ||
                       writeLoading ? (
                         <Spinner size="xs" />
                       ) : (

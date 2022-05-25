@@ -11,12 +11,13 @@ import humanize from '@lib/humanize'
 import omit from '@lib/omit'
 import splitSignature from '@lib/splitSignature'
 import { motion } from 'framer-motion'
-import { FC, useContext } from 'react'
+import { FC, useContext, useState, useEffect } from 'react'
 import toast from 'react-hot-toast'
 import {
   CHAIN_ID,
   CONNECT_WALLET,
   ERROR_MESSAGE,
+  RELAY_ON,
   LENSHUB_PROXY,
   WRONG_NETWORK
 } from 'src/constants'
@@ -26,6 +27,8 @@ import {
   useNetwork,
   useSignTypedData
 } from 'wagmi'
+import { BROADCAST_MUTATION } from '@gql/BroadcastMutation'
+import trackEvent from '@lib/trackEvent'
 
 const CREATE_MIRROR_TYPED_DATA_MUTATION = gql`
   mutation CreateMirrorTypedData($request: CreateMirrorRequest!) {
@@ -65,14 +68,27 @@ interface Props {
 }
 
 const Mirror: FC<Props> = ({ post }) => {
+  const [count, setCount] = useState<number>(0)
   const { currentUser } = useContext(AppContext)
   const { activeChain } = useNetwork()
   const { data: account } = useAccount()
+
+  useEffect(() => {
+    if (post?.stats?.totalAmountOfMirrors) {
+      setCount(post?.stats?.totalAmountOfMirrors)
+    }
+  }, [post?.stats?.totalAmountOfMirrors])
+
   const { isLoading: signLoading, signTypedDataAsync } = useSignTypedData({
     onError(error) {
       toast.error(error?.message)
     }
   })
+  const onCompleted = () => {
+    setCount(count + 1)
+    toast.success('Post has been mirrored!')
+    trackEvent('mirror')
+  }
   const { isLoading: writeLoading, write } = useContractWrite(
     {
       addressOrName: LENSHUB_PROXY,
@@ -89,6 +105,20 @@ const Mirror: FC<Props> = ({ post }) => {
     }
   )
 
+  const [broadcast, { loading: broadcastLoading }] = useMutation(
+    BROADCAST_MUTATION,
+    {
+      onCompleted({ broadcast }) {
+        if (broadcast?.reason !== 'NOT_ALLOWED') {
+          onCompleted()
+        }
+      },
+      onError(error) {
+        consoleLog('Relay Error', '#ef4444', error.message)
+      }
+    }
+  )
+
   const [createMirrorTypedData, { loading: typedDataLoading }] = useMutation(
     CREATE_MIRROR_TYPED_DATA_MUTATION,
     {
@@ -98,7 +128,7 @@ const Mirror: FC<Props> = ({ post }) => {
         createMirrorTypedData: CreateMirrorBroadcastItemResult
       }) {
         consoleLog('Mutation', '#4ade80', 'Generated createMirrorTypedData')
-        const { typedData } = createMirrorTypedData
+        const { id, typedData } = createMirrorTypedData
         const {
           profileId,
           profileIdPointed,
@@ -128,7 +158,17 @@ const Mirror: FC<Props> = ({ post }) => {
               deadline: typedData.value.deadline
             }
           }
-          write({ args: inputStruct })
+          if (RELAY_ON) {
+            broadcast({ variables: { request: { id, signature } } }).then(
+              ({ data: { broadcast }, errors }) => {
+                if (errors || broadcast?.reason === 'NOT_ALLOWED') {
+                  write({ args: inputStruct })
+                }
+              }
+            )
+          } else {
+            write({ args: inputStruct })
+          }
         })
       },
       onError(error) {
@@ -165,7 +205,10 @@ const Mirror: FC<Props> = ({ post }) => {
     >
       <div className="flex items-center space-x-1 text-brand">
         <div className="p-1.5 rounded-full hover:bg-opacity-20 hover:bg-brand-300">
-          {typedDataLoading || signLoading || writeLoading ? (
+          {typedDataLoading ||
+          signLoading ||
+          broadcastLoading ||
+          writeLoading ? (
             <div className="m-3">
               <Spinner size="xs" />
             </div>
@@ -173,9 +216,7 @@ const Mirror: FC<Props> = ({ post }) => {
             <Button outline size="lg">
               <>
                 <ChevronUpIcon className="w-4 h-4" />
-                <div className="text-xs">
-                  {humanize(post?.stats?.totalAmountOfMirrors)}
-                </div>
+                <div className="text-xs">{humanize(count)}</div>
               </>
             </Button>
           )}

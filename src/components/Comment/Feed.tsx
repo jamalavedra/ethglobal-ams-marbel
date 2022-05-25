@@ -14,20 +14,15 @@ import dynamic from 'next/dynamic'
 
 const NewPostModal = dynamic(() => import('../Post/NewPost/Modal'))
 
-function diff_hours(dt2:any, dt1:any) 
- {
-
-  var diff =(dt2.getTime() - dt1.getTime()) / 1000;
-  diff /= (60 * 60);
-  return Math.abs(Math.round(diff));
-  
- }
-
-function calculateScore(votes:number, itemHourAge:number, gravity:number) {
-  return (votes ) / Math.pow((itemHourAge + 2), gravity);
+function diff_hours(dt2: any, dt1: any) {
+  var diff = (dt2.getTime() - dt1.getTime()) / 1000
+  diff /= 60 * 60
+  return Math.abs(Math.round(diff))
 }
 
-
+function calculateScore(votes: number, itemHourAge: number, gravity: number) {
+  return votes / Math.pow(itemHourAge + 2, gravity)
+}
 
 function descendingComparator(
   a: { [key: string]: { [key: string]: any[] } },
@@ -49,7 +44,17 @@ function getComparator(order: string) {
 }
 
 function stableSort(array: any[], comparator: any) {
-  const stabilizedThis = array.map((el, index) => [{score:calculateScore(el['stats']['totalAmountOfMirrors'],diff_hours(new Date(el['createdAt']), new Date()),1.8),...el}, index])
+  const stabilizedThis = array.map((el, index) => [
+    {
+      score: calculateScore(
+        el['stats']['totalAmountOfMirrors'],
+        diff_hours(new Date(el['createdAt']), new Date()),
+        1.8
+      ),
+      ...el
+    },
+    index
+  ])
   stabilizedThis.sort((a, b) => {
     const order = comparator(a[0], b[0])
     if (order !== 0) return order
@@ -164,7 +169,17 @@ const Feed: FC<Props> = ({
               )
             )}
           </div>
-          <p className='text-gray-400 text-sm'>Posts ranked with <a href='https://medium.com/hacking-and-gonzo/how-hacker-news-ranking-algorithm-works-1d9b0cf2c08d#.x86yaez0u' target="_blank" rel="noreferrer noopener" className='text-red-300 font-medium pointer hover:underline'>the hackernews algorithm</a></p>
+          <p className="text-gray-400 text-sm">
+            Posts ranked with{' '}
+            <a
+              href="https://medium.com/hacking-and-gonzo/how-hacker-news-ranking-algorithm-works-1d9b0cf2c08d#.x86yaez0u"
+              target="_blank"
+              rel="noreferrer noopener"
+              className="text-red-300 font-medium pointer hover:underline"
+            >
+              the hackernews algorithm
+            </a>
+          </p>
 
           {pageInfo?.next && (
             <span ref={observe} className="flex justify-center p-5">
@@ -183,4 +198,3 @@ const Feed: FC<Props> = ({
 }
 
 export default Feed
- 

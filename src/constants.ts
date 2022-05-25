@@ -10,8 +10,12 @@ export const GIT_COMMIT_SHA =
   process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA?.slice(0, 7)
 export const GIT_COMMIT_REF = process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_REF
 
-// Misc
-export const CONTACT_EMAIL = 'support@lenster.xyz'
+export const PUBLIC_URL = process.env.NEXT_PUBLIC_URL
+export const RELAY_ON =
+  PUBLIC_URL === 'https://marbel-dashboard.vercel.app/' ||
+  PUBLIC_URL === 'http://localhost:4783'
+    ? process.env.NEXT_PUBLIC_RELAY_ON === 'true'
+    : false
 
 // Messages
 export const ERROR_MESSAGE = 'Something went wrong!'
@@ -24,8 +28,9 @@ export const SIGN_ERROR = 'Failed to sign data'
 // URLs
 export const STATIC_ASSETS = 'https://assets.lenster.xyz/images'
 export const API_URL = IS_MAINNET
-  ? 'https://api-mumbai.lens.dev'
+  ? 'https://api.lens.dev'
   : 'https://api-mumbai.lens.dev'
+
 export const POLYGONSCAN_URL = IS_MAINNET
   ? 'https://polygonscan.com'
   : 'https://mumbai.polygonscan.com'
@@ -53,14 +58,14 @@ export const CHAIN_ID = IS_MAINNET ? POLYGON_MAINNET.id : POLYGON_MUMBAI.id
 // Addresses
 export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
 export const LENSHUB_PROXY = IS_MAINNET
-  ? '0x60Ae865ee4C725cd04353b5AAb364553f56ceF82'
+  ? '0xDb46d1Dc155634FbC732f92E853b10B288AD5a1d'
   : '0x60Ae865ee4C725cd04353b5AAb364553f56ceF82'
 export const LENS_PERIPHERY = IS_MAINNET
-  ? '0xD5037d72877808cdE7F669563e9389930AF404E8'
+  ? '0xeff187b4190E551FC25a7fA4dFC6cf7fDeF7194f'
   : '0xD5037d72877808cdE7F669563e9389930AF404E8'
 export const FREE_COLLECT_MODULE = IS_MAINNET
-  ? '0x5E70fFD2C6D04d65C3abeBa64E93082cfA348dF8'
+  ? '0x23b9467334bEb345aAa6fd1545538F3d54436e96'
   : '0x5E70fFD2C6D04d65C3abeBa64E93082cfA348dF8'
 export const DEFAULT_COLLECT_TOKEN = IS_MAINNET
-  ? '0x9c3C9283D3e44854697Cd22D3Faa240Cfb032889'
+  ? '0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270'
   : '0x9c3C9283D3e44854697Cd22D3Faa240Cfb032889'

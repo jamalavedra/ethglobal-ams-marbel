@@ -30,6 +30,7 @@ import {
   CHAIN_ID,
   CONNECT_WALLET,
   ERROR_MESSAGE,
+  RELAY_ON,
   LENSHUB_PROXY,
   WRONG_NETWORK
 } from 'src/constants'
@@ -44,6 +45,7 @@ import { Input } from '@components/UI/Input'
 import { Form, useZodForm } from '@components/UI/Form'
 import { object, string } from 'zod'
 import trackEvent from '@lib/trackEvent'
+import { BROADCAST_MUTATION } from '@gql/BroadcastMutation'
 
 const editProfileSchema = object({
   title: string()
@@ -114,6 +116,13 @@ const NewComment: FC<Props> = ({ refetch, post, type }) => {
     }
   })
 
+  const onCompleted = () => {
+    setAttachments([])
+    setSelectedModule(defaultModuleData)
+    setFeeData(defaultFeeData)
+    trackEvent('new post', 'create')
+  }
+
   const form = useZodForm({
     schema: editProfileSchema,
     defaultValues: {
@@ -135,9 +144,7 @@ const NewComment: FC<Props> = ({ refetch, post, type }) => {
     'commentWithSig',
     {
       onSuccess() {
-        setSelectedModule(defaultModuleData)
-        setFeeData(defaultFeeData)
-        trackEvent('new post', 'create')
+        onCompleted()
       },
       onError(error) {
         console.log('useContractWrite', error)
@@ -145,6 +152,18 @@ const NewComment: FC<Props> = ({ refetch, post, type }) => {
       }
     }
   )
+
+  const [broadcast, { data: broadcastData, loading: broadcastLoading }] =
+    useMutation(BROADCAST_MUTATION, {
+      onCompleted({ broadcast }) {
+        if (broadcast?.reason !== 'NOT_ALLOWED') {
+          onCompleted()
+        }
+      },
+      onError(error) {
+        consoleLog('Relay Error', '#ef4444', error.message)
+      }
+    })
 
   const [createCommentTypedData, { loading: typedDataLoading }] = useMutation(
     CREATE_COMMENT_TYPED_DATA_MUTATION,
@@ -155,7 +174,7 @@ const NewComment: FC<Props> = ({ refetch, post, type }) => {
         createCommentTypedData: CreateCommentBroadcastItemResult
       }) {
         consoleLog('Mutation', '#4ade80', 'Generated createCommentTypedData')
-        const { typedData } = createCommentTypedData
+        const { id, typedData } = createCommentTypedData
         const {
           profileId,
           profileIdPointed,
@@ -191,7 +210,17 @@ const NewComment: FC<Props> = ({ refetch, post, type }) => {
               deadline: typedData.value.deadline
             }
           }
-          write({ args: inputStruct })
+          if (RELAY_ON) {
+            broadcast({ variables: { request: { id, signature } } }).then(
+              ({ data: { broadcast }, errors }) => {
+                if (errors || broadcast?.reason === 'NOT_ALLOWED') {
+                  write({ args: inputStruct })
+                }
+              }
+            )
+          } else {
+            write({ args: inputStruct })
+          }
         })
       },
       onError(error) {
@@ -285,15 +314,19 @@ const NewComment: FC<Props> = ({ refetch, post, type }) => {
             </p>
             <div className="block items-center sm:flex">
               <div className="flex items-center mt-5 ml-auto space-x-2 sm:pt-0">
-                {data?.hash && (
+                {data?.hash ?? broadcastData?.broadcast?.txHash ? (
                   <div className="py-2">
                     <PubIndexStatus
                       refetch={refetch}
                       type={type === 'comment' ? 'Comment' : 'Entry'}
-                      txHash={data?.hash}
+                      txHash={
+                        data?.hash
+                          ? data?.hash
+                          : broadcastData?.broadcast?.txHash
+                      }
                     />
                   </div>
-                )}
+                ) : null}{' '}
                 {activeChain?.id !== CHAIN_ID ? (
                   <SwitchNetwork className="ml-auto" />
                 ) : (
@@ -303,12 +336,14 @@ const NewComment: FC<Props> = ({ refetch, post, type }) => {
                       isUploading ||
                       typedDataLoading ||
                       signLoading ||
+                      broadcastLoading ||
                       writeLoading
                     }
                     icon={
                       isUploading ||
                       typedDataLoading ||
                       signLoading ||
+                      broadcastLoading ||
                       writeLoading ? (
                         <Spinner size="xs" />
                       ) : type === 'community post' ? (
@@ -324,7 +359,7 @@ const NewComment: FC<Props> = ({ refetch, post, type }) => {
                       ? `Generating ${type === 'comment' ? 'Comment' : 'Entry'}`
                       : signLoading
                       ? 'Sign'
-                      : writeLoading
+                      : writeLoading || broadcastLoading
                       ? 'Send'
                       : type === 'comment'
                       ? 'Comment'
