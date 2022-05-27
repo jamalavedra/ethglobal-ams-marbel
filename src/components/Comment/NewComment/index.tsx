@@ -3,11 +3,12 @@ import { gql, useMutation } from '@apollo/client'
 import PubIndexStatus from '@components/Shared/PubIndexStatus'
 import SwitchNetwork from '@components/Shared/SwitchNetwork'
 import { Button } from '@components/UI/Button'
+import Preview from '@components/Shared/Preview'
+import AppContext from '@components/utils/AppContext'
 import { Card } from '@components/UI/Card'
 import { ErrorMessage } from '@components/UI/ErrorMessage'
 import { MentionTextArea } from '@components/UI/MentionTextArea'
 import { Spinner } from '@components/UI/Spinner'
-import AppContext from '@components/utils/AppContext'
 import { LensterAttachment, LensterPost } from '@generated/lenstertypes'
 import {
   CreateCommentBroadcastItemResult,
@@ -43,6 +44,7 @@ import {
 } from 'wagmi'
 import trackEvent from '@lib/trackEvent'
 import { BROADCAST_MUTATION } from '@gql/BroadcastMutation'
+import Markup from '@components/Shared/Markup'
 
 const CREATE_COMMENT_TYPED_DATA_MUTATION = gql`
   mutation CreateCommentTypedData($request: CreatePublicCommentRequest!) {
@@ -87,6 +89,7 @@ interface Props {
 }
 
 const NewComment: FC<Props> = ({ refetch, post, type }) => {
+  const [preview, setPreview] = useState<boolean>(false)
   const [commentContent, setCommentContent] = useState<string>('')
   const [commentContentError, setCommentContentError] = useState<string>('')
   const { currentUser } = useContext(AppContext)
@@ -269,6 +272,11 @@ const NewComment: FC<Props> = ({ refetch, post, type }) => {
               error={error}
             />
           )}
+          {preview ? (
+            <div className="pb-3 mb-2 border-b dark:border-b-gray-700/80">
+              <Markup>{commentContent}</Markup>
+            </div>
+          ) : (
           <MentionTextArea
             value={commentContent}
             setValue={setCommentContent}
@@ -276,7 +284,13 @@ const NewComment: FC<Props> = ({ refetch, post, type }) => {
             setError={setCommentContentError}
             placeholder=""
           />
+          )}
           <div className="block items-center sm:flex">
+          <div className="flex items-center space-x-4">
+          {commentContent && (
+                <Preview preview={preview} setPreview={setPreview} />
+              )}
+            </div>
             <div className="flex items-center pt-2 ml-auto space-x-2 sm:pt-0">
               {data?.hash ?? broadcastData?.broadcast?.txHash ? (
                 <PubIndexStatus

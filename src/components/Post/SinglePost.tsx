@@ -13,8 +13,8 @@ import PostBody from './PostBody'
 import PostType from './Type'
 import Mirror from './Actions/Mirror'
 import { useContext } from 'react'
-import AppContext from '@components/utils/AppContext'
 import Delete from './Actions/Delete'
+import AppContext from '@components/utils/AppContext'
 
 interface Props {
   post: LensterPost

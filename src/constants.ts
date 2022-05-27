@@ -11,9 +11,14 @@ export const GIT_COMMIT_SHA =
 export const GIT_COMMIT_REF = process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_REF
 
 export const PUBLIC_URL = process.env.NEXT_PUBLIC_URL
+export const TITLE = 'Marbel'
+export const DESCRIPTION =
+  'Marbel is a decentralized, open-source, blockchain-based, decentralized communication platform.'
+  export const DEFAULT_OG = 'https://assets.lenster.xyz/images/og/logo.jpeg'
+
 export const RELAY_ON =
   PUBLIC_URL === 'https://marbel-dashboard.vercel.app/' ||
-  PUBLIC_URL === 'http://localhost:4783'
+  PUBLIC_URL === 'http://localhost:3000/'
     ? process.env.NEXT_PUBLIC_RELAY_ON === 'true'
     : false
 
@@ -26,6 +31,9 @@ export const WRONG_NETWORK = IS_MAINNET
 export const SIGN_ERROR = 'Failed to sign data'
 
 // URLs
+export const RARIBLE_URL = IS_MAINNET
+  ? 'https://rarible.com'
+  : 'https://rinkeby.rarible.com'
 export const STATIC_ASSETS = 'https://assets.lenster.xyz/images'
 export const API_URL = IS_MAINNET
   ? 'https://api.lens.dev'
