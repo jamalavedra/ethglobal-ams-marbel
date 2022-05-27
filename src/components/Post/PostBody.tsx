@@ -14,20 +14,25 @@ const PostBody: FC<Props> = ({ post, hideType }) => {
   const [showMore, setShowMore] = useState<boolean>(
     post?.metadata?.content?.length > 250
   )
-
   return (
     <div className="break-words">
       <>
-        <div
-          className={clsx({
-            'line-clamp-5 text-transparent bg-clip-text bg-gradient-to-b from-black dark:from-white to-gray-400 dark:to-gray-900':
-              showMore && pathname !== '/posts/[id]'
-          })}
-        >
-          <div className="leading-7 whitespace-pre-wrap break-words linkify">
-            <Markup>{post?.metadata?.content}</Markup>
+        {!hideType ? (
+          <div
+            className={clsx({
+              'line-clamp-5 text-transparent bg-clip-text bg-gradient-to-b from-black dark:from-white to-gray-400 dark:to-gray-900':
+                showMore && pathname !== '/posts/[id]'
+            })}
+          >
+            <h1 className="text-2xl font-medium">{post?.metadata?.content}</h1>
+
+            <div className="border-t mt-5 p-5 border-gray-100 leading-7 whitespace-pre-wrap break-words linkify">
+              <Markup>{post?.metadata?.description}</Markup>
+            </div>
           </div>
-        </div>
+        ) : (
+          <Markup>{post?.metadata?.content}</Markup>
+        )}
         {showMore && pathname !== '/posts/[id]' && (
           <button
             type="button"
