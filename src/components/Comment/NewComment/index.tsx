@@ -225,7 +225,7 @@ const NewComment: FC<Props> = ({ refetch, post, type }) => {
         version: '1.0.0',
         metadata_id: uuidv4(),
         description: commentContent,
-        content: commentContent,
+        content: '',
         external_url: null,
         image: attachments.length > 0 ? attachments[0]?.item : null,
         imageMimeType: attachments.length > 0 ? attachments[0]?.type : null,

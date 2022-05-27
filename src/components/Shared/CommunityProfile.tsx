@@ -32,13 +32,11 @@ const CommunityProfile: FC<Props> = ({ community }) => {
               <div className="text-sm text-gray-500">
                 {community?.metadata?.description}
               </div>
-       
             </div>
           </div>
         </a>
       </Link>
     </div>
-
   )
 }
 

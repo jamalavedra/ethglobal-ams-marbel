@@ -155,7 +155,7 @@ const Feed: FC<Props> = ({
             <div className="rounded-md cursor-pointer  text-gray-800 flex justify-center bg-white p-2 font-medium">
               {'Lastest'}
             </div>
-            <div className="rounded-md pointer text-gray-800 p-2 flex justify-center bg-white font-medium">
+            <div className="rounded-md cursor-pointer text-gray-800 p-2 flex justify-center bg-white font-medium">
               {'Categories'}
             </div>
           </div>

@@ -12,7 +12,7 @@ const List: FC<Props> = ({ communities }) => {
     <Card className="p-4">
       <CardBody>
         {communities.map((community: Community) => (
-          <div key={community?.id} className='mb-5'>
+          <div key={community?.id} className="mb-5">
             <CommunityProfile community={community} />
           </div>
         ))}
