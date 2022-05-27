@@ -9,6 +9,8 @@ import humanize from '@lib/humanize'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import React, { FC, ReactChild, useContext, useState } from 'react'
+import Markup from '@components/Shared/Markup'
+import imagekitURL from '@lib/imagekitURL'
 
 import Join from './Join'
 
@@ -67,13 +69,27 @@ const Details: FC<Props> = ({ community }) => {
 
   return (
     <div className="px-5 mb-4 space-y-5 sm:px-0">
+      <div className="relative w-32 h-32">
+        <img
+          src={imagekitURL(
+            community?.metadata?.cover?.original?.url
+              ? community?.metadata?.cover?.original?.url
+              : `https://avatar.tobi.sh/${community?.id}.png`,
+            'avatar'
+          )}
+          className="w-32 h-32 rounded-full ring-2 ring-gray-200 dark:bg-gray-700 dark:ring-gray-700/80"
+          height={128}
+          width={128}
+          alt={community?.id}
+        />
+      </div>
       <div className="pt-1 text-2xl font-bold">
         <div className="truncate">{community?.metadata?.name}</div>
       </div>
       <div className="space-y-5">
         {community?.metadata?.description && (
           <div className="mr-0 leading-7 sm:mr-10 linkify">
-            <div>{community?.metadata?.description}</div>
+            <Markup>{community?.metadata?.description}</Markup>
           </div>
         )}
         {/* <div className="flex items-center space-x-2">
@@ -108,7 +124,7 @@ const Details: FC<Props> = ({ community }) => {
                 <Collectors pubId={community.id} />
               </Modal>
             </>
-          </MetaDetails> */}
+          </MetaDetails>
           <MetaDetails icon={<AnnotationIcon className="w-4 h-4" />}>
             <>
               {humanize(community?.stats?.totalAmountOfComments)}{' '}
@@ -116,7 +132,7 @@ const Details: FC<Props> = ({ community }) => {
                 ? 'entries'
                 : 'entry'}
             </>
-          </MetaDetails>
+          </MetaDetails> */}
         </div>
       </div>
     </div>

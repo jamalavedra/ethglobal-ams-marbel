@@ -7,6 +7,8 @@ import { Card } from '@components/UI/Card'
 import { ErrorMessage } from '@components/UI/ErrorMessage'
 import { Spinner } from '@components/UI/Spinner'
 import AppContext from '@components/utils/AppContext'
+import Markup from '@components/Shared/Markup'
+
 import { LensterPost } from '@generated/lenstertypes'
 import {
   CreateCommentBroadcastItemResult,
@@ -46,15 +48,17 @@ import { Form, useZodForm } from '@components/UI/Form'
 import { object, string } from 'zod'
 import trackEvent from '@lib/trackEvent'
 import { BROADCAST_MUTATION } from '@gql/BroadcastMutation'
+import { MentionTextArea } from '@components/UI/MentionTextArea'
+import dynamic from 'next/dynamic'
 
 const editProfileSchema = object({
   title: string()
     .min(2, { message: 'Title should have at least 2 characters' })
-    .max(100, { message: 'Title should not exceed 100 characters' }),
-  website: string()
-    .url({ message: 'Invalid URL' })
-    .max(200, { message: 'Website should not exceed 100 characters' })
-    .nullable()
+    .max(100, { message: 'Title should not exceed 100 characters' })
+})
+
+const Preview = dynamic(() => import('../../Shared/Preview'), {
+  loading: () => <div className="mb-1 w-5 h-5 rounded-lg shimmer" />
 })
 
 const CREATE_COMMENT_TYPED_DATA_MUTATION = gql`
@@ -100,6 +104,9 @@ interface Props {
 }
 
 const NewComment: FC<Props> = ({ refetch, post, type }) => {
+  const [preview, setPreview] = useState<boolean>(false)
+  const [postContent, setPostContent] = useState<string>('')
+  const [postContentError, setPostContentError] = useState<string>('')
   const { currentUser } = useContext(AppContext)
   const [selectedModule, setSelectedModule] =
     useState<EnabledModule>(defaultModuleData)
@@ -126,8 +133,7 @@ const NewComment: FC<Props> = ({ refetch, post, type }) => {
   const form = useZodForm({
     schema: editProfileSchema,
     defaultValues: {
-      title: '' as string,
-      website: null
+      title: '' as string
     }
   })
 
@@ -230,7 +236,7 @@ const NewComment: FC<Props> = ({ refetch, post, type }) => {
     }
   )
 
-  const createComment = async (title: string, website: string | null) => {
+  const createComment = async (title: string, description: string | null) => {
     if (!account?.address) {
       toast.error(CONNECT_WALLET)
     } else if (activeChain?.id !== CHAIN_ID) {
@@ -240,7 +246,7 @@ const NewComment: FC<Props> = ({ refetch, post, type }) => {
       const { path } = await uploadToIPFS({
         version: '1.0.0',
         metadata_id: uuidv4(),
-        description: website,
+        description: description,
         content: title,
         external_url: null,
         image: null,
@@ -291,28 +297,37 @@ const NewComment: FC<Props> = ({ refetch, post, type }) => {
           <Form
             form={form}
             className="space-y-4"
-            onSubmit={({ title, website }) => {
-              createComment(title, website)
+            onSubmit={({ title }) => {
+              createComment(title, postContent)
             }}
           >
             <Input
-              label="title"
+              label="Title"
               type="text"
-              placeholder=""
+              placeholder="Write here the title"
               {...form.register('title')}
             />
-            <Input
-              label="Website"
-              type="text"
-              placeholder=""
-              {...form.register('website')}
-            />
 
-            <p className="text-sm text-gray-400">
-              Leave url blank to submit a question for discussion. If there is
-              no url, the text (if any) will appear at the top of the thread.
-            </p>
+            {preview ? (
+              <div className="pb-3 mb-2 border-b dark:border-b-gray-700/80">
+                <Markup>{postContent}</Markup>
+              </div>
+            ) : (
+              <MentionTextArea
+                value={postContent}
+                setValue={setPostContent}
+                error={postContentError}
+                setError={setPostContentError}
+                placeholder="Write here. You can use Markdown"
+              />
+            )}
+
             <div className="block items-center sm:flex">
+              <div className="flex items-center space-x-4">
+                {postContent && (
+                  <Preview preview={preview} setPreview={setPreview} />
+                )}
+              </div>
               <div className="flex items-center mt-5 ml-auto space-x-2 sm:pt-0">
                 {data?.hash ?? broadcastData?.broadcast?.txHash ? (
                   <div className="py-2">

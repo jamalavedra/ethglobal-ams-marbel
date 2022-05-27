@@ -11,6 +11,8 @@ import { Input } from '@components/UI/Input'
 import { Spinner } from '@components/UI/Spinner'
 import { TextArea } from '@components/UI/TextArea'
 import AppContext from '@components/utils/AppContext'
+import ChooseFile from '@components/Shared/ChooseFile'
+import uploadAssetsToIPFS from '@lib/uploadAssetsToIPFS'
 
 import { CreatePostBroadcastItemResult } from '@generated/types'
 import { PlusIcon } from '@heroicons/react/outline'
@@ -18,7 +20,7 @@ import consoleLog from '@lib/consoleLog'
 import omit from '@lib/omit'
 import splitSignature from '@lib/splitSignature'
 import uploadToIPFS from '@lib/uploadToIPFS'
-import React, { useContext, useState } from 'react'
+import React, { ChangeEvent, useContext, useState } from 'react'
 import toast from 'react-hot-toast'
 import {
   CHAIN_ID,
@@ -88,6 +90,8 @@ const Create: NextPage = () => {
   const [avatar, setAvatar] = useState<string>()
   const [avatarType, setAvatarType] = useState<string>()
   const [isUploading, setIsUploading] = useState<boolean>(false)
+  const [uploading, setUploading] = useState<boolean>(false)
+
   const { currentUser } = useContext(AppContext)
   const { activeChain } = useNetwork()
   const { data: account } = useAccount()
@@ -122,6 +126,20 @@ const Create: NextPage = () => {
   const form = useZodForm({
     schema: newCommunitySchema
   })
+
+  const handleUpload = async (evt: ChangeEvent<HTMLInputElement>) => {
+    evt.preventDefault()
+    setUploading(true)
+    try {
+      const attachment = await uploadAssetsToIPFS(evt.target.files)
+      if (attachment[0].item) {
+        setAvatar(attachment[0].item)
+        setAvatarType(attachment[0].type)
+      }
+    } finally {
+      setUploading(false)
+    }
+  }
 
   const [broadcast, { data: broadcastData, loading: broadcastLoading }] =
     useMutation(BROADCAST_MUTATION, {
@@ -274,8 +292,29 @@ const Create: NextPage = () => {
                 placeholder="Tell us something about the community!"
                 {...form.register('description')}
               />
-
-              <div className="ml-auto">
+              <div className="space-y-1.5">
+                <div className="label">Avatar</div>
+                <div className="space-y-3">
+                  {avatar && (
+                    <img
+                      className="w-60 h-60 rounded-lg"
+                      height={240}
+                      width={240}
+                      src={avatar}
+                      alt={avatar}
+                    />
+                  )}
+                  <div className="flex items-center space-x-3">
+                    <ChooseFile
+                      onChange={(evt: ChangeEvent<HTMLInputElement>) =>
+                        handleUpload(evt)
+                      }
+                    />
+                    {uploading && <Spinner size="sm" />}
+                  </div>
+                </div>
+              </div>
+              <div className="ml-auto pt-10">
                 {activeChain?.id !== CHAIN_ID ? (
                   <SwitchNetwork />
                 ) : (

@@ -1,6 +1,11 @@
 import { gql, useQuery } from '@apollo/client'
 import Feed from '@components/Comment/Feed'
-import { GridItemEight, GridItemFour, GridLayout } from '@components/GridLayout'
+import {
+  GridItemEight,
+  GridItemFour,
+  GridItemTwelve,
+  GridLayout
+} from '@components/GridLayout'
 import { Spinner } from '@components/UI/Spinner'
 import { CommunityFields } from '@gql/CommunityFields'
 import consoleLog from '@lib/consoleLog'
@@ -58,15 +63,19 @@ export default function ViewCommunity({ community }: { community: Community }) {
     return <Custom404 />
 
   return (
-    <GridLayout>
-      <GridItemEight className="space-y-5">
-        <Feed post={data.publication} type="community post" />
-      </GridItemEight>
+    <>
+      <GridLayout>
+        <GridItemTwelve>
+          <div className="flex w-full m-auto h-auto justify-center items-center">
+            <Details community={data.publication} />
+          </div>
+        </GridItemTwelve>
 
-      <GridItemFour>
-        <Details community={data.publication} />
-      </GridItemFour>
-    </GridLayout>
+        <GridItemTwelve className="space-y-5">
+          <Feed post={data.publication} type="community post" />
+        </GridItemTwelve>
+      </GridLayout>
+    </>
   )
 }
 

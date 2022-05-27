@@ -146,7 +146,22 @@ const Feed: FC<Props> = ({
 
   return (
     <>
-      {!comments && <NewPostModal post={post} />}
+      {!comments && (
+        <div className="flex">
+          <div className="flex grow space-x-2">
+            <div className="rounded-md cursor-pointer text-white p-2 w-24 flex justify-center bg-red-500 font-medium">
+              {'Top'}
+            </div>
+            <div className="rounded-md cursor-pointer  text-gray-800 flex justify-center bg-white p-2 font-medium">
+              {'Lastest'}
+            </div>
+            <div className="rounded-md pointer text-gray-800 p-2 flex justify-center bg-white font-medium">
+              {'Categories'}
+            </div>
+          </div>
+          <NewPostModal post={post} />
+        </div>
+      )}
       {loading && (
         <div className="flex flex-grow justify-center items-center h-screen animate-pulse">
           <span className="flex justify-center p-5">
@@ -169,7 +184,6 @@ const Feed: FC<Props> = ({
               )
             )}
           </div>
-
 
           {pageInfo?.next && (
             <span ref={observe} className="flex justify-center p-5">

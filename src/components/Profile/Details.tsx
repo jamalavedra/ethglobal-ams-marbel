@@ -2,18 +2,13 @@ import Markup from '@components/Shared/Markup'
 import Slug from '@components/Shared/Slug'
 import { useENS } from '@components/utils/hooks/useENS'
 import { Profile } from '@generated/types'
-import {
-  HashtagIcon,
-  LocationMarkerIcon
-} from '@heroicons/react/outline'
+import { HashtagIcon, LocationMarkerIcon } from '@heroicons/react/outline'
 import formatAddress from '@lib/formatAddress'
 import getAttribute from '@lib/getAttribute'
 import getAvatar from '@lib/getAvatar'
 import { useTheme } from 'next-themes'
 import React, { FC, ReactElement, useEffect, useState } from 'react'
 import { STATIC_ASSETS } from 'src/constants'
-
-
 
 interface Props {
   profile: Profile
@@ -31,7 +26,6 @@ const Details: FC<Props> = ({ profile }) => {
     }
   }, [profile?.stats?.totalFollowers])
 
-
   const MetaDetails = ({
     children,
     icon
@@ -44,7 +38,6 @@ const Details: FC<Props> = ({ profile }) => {
       {children}
     </div>
   )
-
 
   return (
     <div className="px-5 mb-4 space-y-5 sm:px-0">
@@ -67,7 +60,6 @@ const Details: FC<Props> = ({ profile }) => {
         </div>
       </div>
       <div className="space-y-5">
-
         {profile?.bio && (
           <div className="mr-0 leading-7 sm:mr-10 linkify">
             <Markup>{profile?.bio}</Markup>
@@ -76,7 +68,7 @@ const Details: FC<Props> = ({ profile }) => {
         <div className="w-full divider" />
         <div className="space-y-2">
           <MetaDetails icon={<HashtagIcon className="w-4 h-4" />}>
-              {profile?.id}
+            {profile?.id}
           </MetaDetails>
           {getAttribute(profile?.attributes, 'location') && (
             <MetaDetails icon={<LocationMarkerIcon className="w-4 h-4" />}>

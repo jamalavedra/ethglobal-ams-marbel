@@ -277,17 +277,17 @@ const NewComment: FC<Props> = ({ refetch, post, type }) => {
               <Markup>{commentContent}</Markup>
             </div>
           ) : (
-          <MentionTextArea
-            value={commentContent}
-            setValue={setCommentContent}
-            error={commentContentError}
-            setError={setCommentContentError}
-            placeholder=""
-          />
+            <MentionTextArea
+              value={commentContent}
+              setValue={setCommentContent}
+              error={commentContentError}
+              setError={setCommentContentError}
+              placeholder=""
+            />
           )}
           <div className="block items-center sm:flex">
-          <div className="flex items-center space-x-4">
-          {commentContent && (
+            <div className="flex items-center space-x-4">
+              {commentContent && (
                 <Preview preview={preview} setPreview={setPreview} />
               )}
             </div>

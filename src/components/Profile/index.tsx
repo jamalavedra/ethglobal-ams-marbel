@@ -15,7 +15,7 @@ import NFTFeed from './NFTFeed'
 import { Spinner } from '@components/UI/Spinner'
 
 export const PROFILE_QUERY = gql`
-  query Profile($request: ProfileQueryRequest!) { 
+  query Profile($request: ProfileQueryRequest!) {
     profiles(request: $request) {
       items {
         id
@@ -81,13 +81,15 @@ const ViewProfile: NextPage = () => {
   })
 
   if (error) return <Custom500 />
-  if (loading || !data) return    <div className="flex flex-grow justify-center items-center h-screen animate-pulse">
-  <span className="flex justify-center p-5">
-    <Spinner size="sm" />
-  </span>
-</div>
+  if (loading || !data)
+    return (
+      <div className="flex flex-grow justify-center items-center h-screen animate-pulse">
+        <span className="flex justify-center p-5">
+          <Spinner size="sm" />
+        </span>
+      </div>
+    )
   if (data?.profiles?.items?.length === 0) return <Custom404 />
-
 
   const profile = data?.profiles?.items[0]
 
@@ -98,10 +100,7 @@ const ViewProfile: NextPage = () => {
       ) : (
         <SEO title={`@${profile?.handle} • Lenster`} />
       )}
-          <div
-      className="h-52 sm:h-48"
-
-    />
+      <div className="h-52 sm:h-48" />
       <GridLayout className="pt-6">
         <GridItemFour>
           <Details profile={profile} />
@@ -112,9 +111,7 @@ const ViewProfile: NextPage = () => {
             setFeedType={setFeedType}
             feedType={feedType}
           />
-          {(
-            feedType === 'COMMENT' ||
-            feedType === 'MIRROR') && (
+          {(feedType === 'COMMENT' || feedType === 'MIRROR') && (
             <Feed profile={profile} type={feedType} />
           )}
           {feedType === 'NFT' && <NFTFeed profile={profile} />}

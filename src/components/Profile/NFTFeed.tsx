@@ -89,11 +89,13 @@ const NFTFeed: FC<Props> = ({ profile }) => {
 
   return (
     <>
-      {loading && <div className="flex flex-grow justify-center items-center h-screen animate-pulse">
-  <span className="flex justify-center p-5">
-    <Spinner size="sm" />
-  </span>
-</div>}
+      {loading && (
+        <div className="flex flex-grow justify-center items-center h-screen animate-pulse">
+          <span className="flex justify-center p-5">
+            <Spinner size="sm" />
+          </span>
+        </div>
+      )}
       {data?.nfts?.items?.length === 0 && (
         <EmptyState
           message={

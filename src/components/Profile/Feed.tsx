@@ -48,7 +48,12 @@ const Feed: FC<Props> = ({ profile, type }) => {
   const [pageInfo, setPageInfo] = useState<PaginatedResultInfo>()
   const { data, loading, error, fetchMore } = useQuery(PROFILE_FEED_QUERY, {
     variables: {
-      request: { sources:'Marbel',publicationTypes: type, profileId: profile?.id, limit: 10 }
+      request: {
+        sources: 'Marbel',
+        publicationTypes: type,
+        profileId: profile?.id,
+        limit: 10
+      }
     },
     skip: !profile?.id,
     fetchPolicy: 'no-cache',
@@ -86,14 +91,16 @@ const Feed: FC<Props> = ({ profile, type }) => {
       })
     }
   })
- 
+
   return (
     <>
-      {loading &&       <div className="flex flex-grow justify-center items-center h-screen animate-pulse">
-        <span className="flex justify-center p-5">
-          <Spinner size="sm" />
-        </span>
-      </div>}
+      {loading && (
+        <div className="flex flex-grow justify-center items-center h-screen animate-pulse">
+          <span className="flex justify-center p-5">
+            <Spinner size="sm" />
+          </span>
+        </div>
+      )}
       {data?.publications?.items?.length === 0 && (
         <EmptyState
           message={

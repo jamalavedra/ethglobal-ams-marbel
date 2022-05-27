@@ -6,6 +6,7 @@ import { Menu, Transition } from '@headlessui/react'
 import {
   ArrowCircleRightIcon,
   LogoutIcon,
+  UserIcon,
   SwitchHorizontalIcon
 } from '@heroicons/react/outline'
 import { CheckCircleIcon } from '@heroicons/react/solid'
@@ -16,6 +17,7 @@ import { CHAIN_ID } from 'src/constants'
 import { useDisconnect, useNetwork } from 'wagmi'
 
 import Login from './Login'
+import Slug from '../Slug'
 
 export const NextLink = ({ href, children, ...rest }: Record<string, any>) => (
   <Link href={href}>
@@ -62,6 +64,35 @@ const MenuItems: FC = () => {
               static
               className="absolute right-0 py-1 mt-2 w-48 bg-white rounded-md border shadow-sm dark:bg-gray-900 focus:outline-none dark:border-gray-700/80"
             >
+              <Menu.Item
+                as={NextLink}
+                href={`/u/${currentUser?.handle}`}
+                className={({ active }: { active: boolean }) =>
+                  clsx({ 'dropdown-active': active }, 'menu-item')
+                }
+              >
+                <div>Logged in as</div>
+                <div className="truncate">
+                  <Slug
+                    className="font-bold"
+                    slug={currentUser?.handle}
+                    prefix="@"
+                  />
+                </div>
+              </Menu.Item>
+              <div className="divider" />
+              <Menu.Item
+                as={NextLink}
+                href={`/u/${currentUser?.handle}`}
+                className={({ active }: { active: boolean }) =>
+                  clsx({ 'dropdown-active': active }, 'menu-item')
+                }
+              >
+                <div className="flex items-center space-x-1.5">
+                  <UserIcon className="w-4 h-4" />
+                  <div>Your Profile</div>
+                </div>
+              </Menu.Item>
               <Menu.Item
                 as="a"
                 onClick={() => {

@@ -2,16 +2,13 @@ import { Disclosure } from '@headlessui/react'
 import { MenuIcon, XIcon } from '@heroicons/react/outline'
 import Link from 'next/link'
 import { FC } from 'react'
+import { useRouter } from 'next/router'
 
 import MenuItems from './MenuItems'
 // import MoreNavItems from './MoreNavItems'
 
 const Navbar: FC = () => {
-  interface NavItemProps {
-    url: string
-    name: string
-    current: boolean
-  }
+  const router = useRouter()
 
   return (
     <Disclosure
@@ -31,12 +28,17 @@ const Navbar: FC = () => {
                     <MenuIcon className="block w-6 h-6" aria-hidden="true" />
                   )}
                 </Disclosure.Button>
-                <Link href="/">
-                  <a className="text-3xl flex font-black">
-                    <img className="w-12 h-12" src="/logo.svg" alt="Marbel" />
-                    <p className="pt-2 text-2xl font-medium">{'Marbel'}</p>
-                  </a>
-                </Link>
+
+                {router.pathname === '/' ? (
+                  <Link href="/">
+                    <a className="text-3xl flex font-black">
+                      <img className="w-12 h-12" src="/logo.svg" alt="Marbel" />
+                      <p className="pt-2 text-2xl font-medium">{'Marbel'}</p>
+                    </a>
+                  </Link>
+                ) : (
+                  <div />
+                )}
               </div>
               <div className="flex gap-8 items-center">
                 <MenuItems />

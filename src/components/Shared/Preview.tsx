@@ -20,8 +20,7 @@ const Preview: FC<Props> = ({ preview, setPreview }) => {
         }}
         aria-label="Choose Attachment"
       >
-          <EyeIcon className="w-5 h-5 text-brand" />
-
+        <EyeIcon className="w-5 h-5 text-brand" />
       </motion.button>
     </div>
   )

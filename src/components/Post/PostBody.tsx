@@ -17,27 +17,27 @@ const PostBody: FC<Props> = ({ post, hideType }) => {
 
   return (
     <div className="break-words">
-        <>
-          <div
-            className={clsx({
-              'line-clamp-5 text-transparent bg-clip-text bg-gradient-to-b from-black dark:from-white to-gray-400 dark:to-gray-900':
-                showMore && pathname !== '/posts/[id]'
-            })}
-          >
-            <div className="leading-7 whitespace-pre-wrap break-words linkify">
-              <Markup>{post?.metadata?.content}</Markup>
-            </div>
+      <>
+        <div
+          className={clsx({
+            'line-clamp-5 text-transparent bg-clip-text bg-gradient-to-b from-black dark:from-white to-gray-400 dark:to-gray-900':
+              showMore && pathname !== '/posts/[id]'
+          })}
+        >
+          <div className="leading-7 whitespace-pre-wrap break-words linkify">
+            <Markup>{post?.metadata?.content}</Markup>
           </div>
-          {showMore && pathname !== '/posts/[id]' && (
-            <button
-              type="button"
-              className="mt-2 text-sm font-bold"
-              onClick={() => setShowMore(!showMore)}
-            >
-              Show more
-            </button>
-          )}
-        </>
+        </div>
+        {showMore && pathname !== '/posts/[id]' && (
+          <button
+            type="button"
+            className="mt-2 text-sm font-bold"
+            onClick={() => setShowMore(!showMore)}
+          >
+            Show more
+          </button>
+        )}
+      </>
     </div>
   )
 }
