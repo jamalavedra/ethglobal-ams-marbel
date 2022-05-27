@@ -1,5 +1,10 @@
 import { gql, useQuery } from '@apollo/client'
-import { GridItemEight, GridItemFour, GridItemTwelve, GridLayout } from '@components/GridLayout'
+import {
+  GridItemEight,
+  GridItemFour,
+  GridItemTwelve,
+  GridLayout
+} from '@components/GridLayout'
 import SEO from '@components/utils/SEO'
 import consoleLog from '@lib/consoleLog'
 import { NextPage } from 'next'

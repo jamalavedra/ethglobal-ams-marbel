@@ -48,7 +48,9 @@ const SinglePost: FC<Props> = ({
 
           <div className="flex-1">
             <PostBody post={post} hideType={!hideType && !postPage} />
-            <div className={`flex ${!hideType && !postPage?'':'px-5'} py-2`}>
+            <div
+              className={`flex ${!hideType && !postPage ? '' : 'px-5'} py-2`}
+            >
               <div>
                 <Author
                   post={post}

@@ -25,18 +25,22 @@ const PostBody: FC<Props> = ({ post, hideType }) => {
                 showMore && pathname !== '/posts/[id]'
             })}
           >
-            <h1 className="text-2xl font-medium"><Markup>{post?.metadata?.content}</Markup></h1>
+            {post?.metadata?.content?.length > 0 && (
+              <h1 className="text-2xl font-medium border-b pb-5 border-gray-100">
+                <Markup>{post?.metadata?.content}</Markup>
+              </h1>
+            )}
 
-            <div className="border-t mt-5 p-5 border-gray-100 leading-7 whitespace-pre-wrap break-words linkify">
+            <div className="p-5 leading-7 whitespace-pre-wrap break-words linkify">
               <Markup>{post?.metadata?.description}</Markup>
             </div>
           </div>
         ) : (
           <Link href={`/posts/${post?.id}`}>
-          <a className='hover:underline' href={`/posts/${post?.id}`}>
-          <Markup>{post?.metadata?.content}</Markup>
-          </a>
-                </Link>
+            <a className="hover:underline" href={`/posts/${post?.id}`}>
+              <Markup>{post?.metadata?.content}</Markup>
+            </a>
+          </Link>
         )}
         {showMore && pathname !== '/posts/[id]' && (
           <button
