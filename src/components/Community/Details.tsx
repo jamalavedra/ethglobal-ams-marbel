@@ -49,7 +49,7 @@ const Details: FC<Props> = ({ community }) => {
   })
 
   const [showMore, setShowMore] = useState<boolean>(
-    community?.metadata?.description.length >150
+    community?.metadata?.description.length > 150
   )
 
   const MetaDetails = ({

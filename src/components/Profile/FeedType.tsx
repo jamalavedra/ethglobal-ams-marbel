@@ -1,7 +1,6 @@
 import { ProfileStats } from '@generated/types'
 import {
   ChatAlt2Icon,
-  PencilAltIcon,
   PhotographIcon,
   SwitchHorizontalIcon
 } from '@heroicons/react/outline'

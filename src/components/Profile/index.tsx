@@ -1,23 +1,48 @@
 import { gql, useQuery } from '@apollo/client'
-import {
-  GridItemEight,
-  GridItemFour,
-  GridItemTwelve,
-  GridLayout
-} from '@components/GridLayout'
+import { GridItemSix, GridItemTwelve, GridLayout } from '@components/GridLayout'
 import SEO from '@components/utils/SEO'
 import consoleLog from '@lib/consoleLog'
 import { NextPage } from 'next'
 import { useRouter } from 'next/router'
-import React, { useState } from 'react'
+import React, { useState, ReactChild, FC } from 'react'
 import Custom404 from 'src/pages/404'
 import Custom500 from 'src/pages/500'
 
 import Details from './Details'
 import Feed from './Feed'
-import FeedType from './FeedType'
 import NFTFeed from './NFTFeed'
 import { Spinner } from '@components/UI/Spinner'
+import { ChatAlt2Icon } from '@heroicons/react/solid'
+import humanize from '@lib/humanize'
+import clsx from 'clsx'
+
+interface FeedLinkProps {
+  name: string
+  icon: ReactChild
+  type: string
+  count?: number
+}
+
+const FeedLink: FC<FeedLinkProps> = ({ name, icon, type, count = 0 }) => (
+  <div
+    className={clsx(
+      {
+        'text-brand bg-brand-100 dark:bg-opacity-20 bg-opacity-100 font-bold':
+          false
+      },
+      'flex mb-4 items-center space-x-2 rounded-lg px-4 sm:px-3 py-2 sm:py-1 text-brand dark:hover:bg-opacity-20 hover:bg-opacity-100'
+    )}
+    aria-label={name}
+  >
+    {icon}
+    <div className="hidden sm:block">{name}</div>
+    {count ? (
+      <div className="px-2 text-xs font-medium rounded-full bg-brand-200 dark:bg-brand-800">
+        {humanize(count)}
+      </div>
+    ) : null}
+  </div>
+)
 
 export const PROFILE_QUERY = gql`
   query Profile($request: ProfileQueryRequest!) {
@@ -68,11 +93,7 @@ const ViewProfile: NextPage = () => {
   const {
     query: { username, type }
   } = useRouter()
-  const [feedType, setFeedType] = useState<string>(
-    type && ['post', 'comment', 'mirror', 'nft'].includes(type as string)
-      ? type?.toString().toUpperCase()
-      : 'COMMENT'
-  )
+
   const { data, loading, error } = useQuery(PROFILE_QUERY, {
     variables: { request: { handles: username } },
     skip: !username,
@@ -105,21 +126,34 @@ const ViewProfile: NextPage = () => {
       ) : (
         <SEO title={`@${profile?.handle} • Lenster`} />
       )}
-      <div className="h-52 sm:h-48" />
+
       <GridLayout className="pt-6">
         <GridItemTwelve>
           <Details profile={profile} />
         </GridItemTwelve>
         <GridItemTwelve className="space-y-5">
-          <FeedType
-            stats={profile?.stats}
-            setFeedType={setFeedType}
-            feedType={feedType}
-          />
-          {(feedType === 'COMMENT' || feedType === 'MIRROR') && (
-            <Feed profile={profile} type={feedType} />
-          )}
-          {feedType === 'NFT' && <NFTFeed profile={profile} />}
+          <GridLayout className="pt-6">
+            <GridItemSix>
+              <FeedLink
+                name="Posts"
+                icon={<ChatAlt2Icon className="w-4 h-4" />}
+                type="COMMENT"
+                count={profile?.stats?.totalComments}
+              />
+              <Feed profile={profile} type={'COMMENT'} />
+            </GridItemSix>
+            <GridItemSix>
+              <FeedLink
+                name="Upvotes"
+                icon={<ChatAlt2Icon className="w-4 h-4" />}
+                type="COMMENT"
+                count={profile?.stats?.totalMirrors}
+              />
+              <Feed profile={profile} type={'MIRROR'} />
+            </GridItemSix>
+          </GridLayout>
+
+          <NFTFeed profile={profile} />
         </GridItemTwelve>
       </GridLayout>
     </>
