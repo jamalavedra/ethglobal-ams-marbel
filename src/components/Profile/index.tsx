@@ -1,5 +1,5 @@
 import { gql, useQuery } from '@apollo/client'
-import { GridItemEight, GridItemFour, GridLayout } from '@components/GridLayout'
+import { GridItemEight, GridItemFour, GridItemTwelve, GridLayout } from '@components/GridLayout'
 import SEO from '@components/utils/SEO'
 import consoleLog from '@lib/consoleLog'
 import { NextPage } from 'next'
@@ -102,10 +102,10 @@ const ViewProfile: NextPage = () => {
       )}
       <div className="h-52 sm:h-48" />
       <GridLayout className="pt-6">
-        <GridItemFour>
+        <GridItemTwelve>
           <Details profile={profile} />
-        </GridItemFour>
-        <GridItemEight className="space-y-5">
+        </GridItemTwelve>
+        <GridItemTwelve className="space-y-5">
           <FeedType
             stats={profile?.stats}
             setFeedType={setFeedType}
@@ -115,7 +115,7 @@ const ViewProfile: NextPage = () => {
             <Feed profile={profile} type={feedType} />
           )}
           {feedType === 'NFT' && <NFTFeed profile={profile} />}
-        </GridItemEight>
+        </GridItemTwelve>
       </GridLayout>
     </>
   )

@@ -3,6 +3,7 @@ import clsx from 'clsx'
 import { useRouter } from 'next/router'
 import React, { FC, useState } from 'react'
 import Markup from '@components/Shared/Markup'
+import Link from 'next/link'
 
 interface Props {
   post: LensterPost
@@ -31,7 +32,11 @@ const PostBody: FC<Props> = ({ post, hideType }) => {
             </div>
           </div>
         ) : (
+          <Link href={`/posts/${post?.id}`}>
+          <a className='hover:underline' href={`/posts/${post?.id}`}>
           <Markup>{post?.metadata?.content}</Markup>
+          </a>
+                </Link>
         )}
         {showMore && pathname !== '/posts/[id]' && (
           <button

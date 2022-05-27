@@ -69,7 +69,7 @@ const Details: FC<Props> = ({ community }) => {
 
   return (
     <div className="px-5 mb-4 space-y-5 sm:px-0">
-      <div className="relative w-32 h-32">
+      <div className="relative w-full flex justify-center">
         <img
           src={imagekitURL(
             community?.metadata?.cover?.original?.url
@@ -78,17 +78,17 @@ const Details: FC<Props> = ({ community }) => {
             'avatar'
           )}
           className="w-32 h-32 rounded-full ring-2 ring-gray-200 dark:bg-gray-700 dark:ring-gray-700/80"
-          height={128}
-          width={128}
+          height={32}
+          width={32}
           alt={community?.id}
         />
       </div>
-      <div className="pt-1 text-2xl font-bold">
+      <div className="pt-1 text-2xl font-bold justify-center flex">
         <div className="truncate">{community?.metadata?.name}</div>
       </div>
-      <div className="space-y-5">
+      <div className="space-y-5 justify-center flex">
         {community?.metadata?.description && (
-          <div className="mr-0 leading-7 sm:mr-10 linkify">
+          <div className="mr-0 leading-7 sm:mr-10 justify-center flex linkify">
             <Markup>{community?.metadata?.description}</Markup>
           </div>
         )}
