@@ -24,7 +24,7 @@ const PostBody: FC<Props> = ({ post, hideType }) => {
                 showMore && pathname !== '/posts/[id]'
             })}
           >
-            <h1 className="text-2xl font-medium">{post?.metadata?.content}</h1>
+            <h1 className="text-2xl font-medium"><Markup>{post?.metadata?.content}</Markup></h1>
 
             <div className="border-t mt-5 p-5 border-gray-100 leading-7 whitespace-pre-wrap break-words linkify">
               <Markup>{post?.metadata?.description}</Markup>

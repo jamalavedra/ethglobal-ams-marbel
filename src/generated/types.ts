@@ -1477,6 +1477,7 @@ export type Nft = {
 /** The NFT content uri */
 export type NftContent = {
   __typename?: 'NFTContent'
+  animatedUrl:Scalars['String'],
   /** The meta type content */
   metaType: Scalars['String']
   /** The token uri  nft */
