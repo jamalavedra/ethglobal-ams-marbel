@@ -4,7 +4,7 @@ import SEO from '@components/utils/SEO'
 import consoleLog from '@lib/consoleLog'
 import { NextPage } from 'next'
 import { useRouter } from 'next/router'
-import React, { useState, ReactChild, FC } from 'react'
+import React, { ReactChild, FC } from 'react'
 import Custom404 from 'src/pages/404'
 import Custom500 from 'src/pages/500'
 
@@ -15,6 +15,7 @@ import { Spinner } from '@components/UI/Spinner'
 import { ChatAlt2Icon } from '@heroicons/react/solid'
 import humanize from '@lib/humanize'
 import clsx from 'clsx'
+import { ChevronUpIcon } from '@heroicons/react/outline'
 
 interface FeedLinkProps {
   name: string
@@ -145,7 +146,7 @@ const ViewProfile: NextPage = () => {
             <GridItemSix>
               <FeedLink
                 name="Upvotes"
-                icon={<ChatAlt2Icon className="w-4 h-4" />}
+                icon={<ChevronUpIcon className="w-4 h-4" />}
                 type="COMMENT"
                 count={profile?.stats?.totalMirrors}
               />

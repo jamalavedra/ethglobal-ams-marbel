@@ -4,7 +4,6 @@
 
 body {
   font-family: 'Inter', Helvetica, Arial, sans-serif;
-  @apply bg-gray-50;
   @apply dark:bg-black;
 }
 
