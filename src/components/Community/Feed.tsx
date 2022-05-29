@@ -46,7 +46,7 @@ const Feed: FC<Props> = ({ post, sortCriteria }) => {
     skip: !id,
     fetchPolicy: 'no-cache',
     onCompleted(data) {
-      console.log('COMMENT_FEED_QUERY',data.publications)
+      console.log('COMMENT_FEED_QUERY', data.publications)
       setPageInfo(data?.publications?.pageInfo)
       consoleLog(
         'Query',
@@ -58,7 +58,7 @@ const Feed: FC<Props> = ({ post, sortCriteria }) => {
 
   const { observe } = useInView({
     onEnter: () => {
-      console.log('post',post)
+      console.log('post', post)
       fetchMore({
         variables: {
           request: {
@@ -108,14 +108,13 @@ const Feed: FC<Props> = ({ post, sortCriteria }) => {
         <>
           <div className="space-y-3">
             {links?.map((post: LensterPost, index: number) => (
-                       <SinglePost
-                       key={`${post?.id}_${index}`}
-                       index={index}
-                       post={post}
-                       hideType={false}
-                     />
-                   )
-                   )}
+              <SinglePost
+                key={`${post?.id}_${index}`}
+                index={index}
+                post={post}
+                hideType={false}
+              />
+            ))}
           </div>
           {pageInfo?.next && links?.items?.length !== pageInfo?.totalCount && (
             <span ref={observe} className="flex justify-center p-5">

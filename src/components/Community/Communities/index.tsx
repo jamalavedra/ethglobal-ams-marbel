@@ -65,7 +65,7 @@ const Communities: NextPage = () => {
 
   return (
     <GridLayout>
-      <GridItemSix>
+      <GridItemSix className="mb-10">
         <div className="py-12 mb-4 bg-white bg-hero">
           <div className="container px-5 mx-auto max-w-screen-xl">
             <div className="flex items-stretch py-8 w-full text-center sm:py-12 sm:text-left">
@@ -93,7 +93,7 @@ const Communities: NextPage = () => {
         <Footer />
       </GridItemSix>
       <GridItemSix>
-        <div className="flex items-center mb-2 space-x-1.5 font-bold text-gray-500">
+        <div className="flex ml-5 mb-2 space-x-1.5 font-medium text-gray-700">
           <FireIcon className="w-5 h-5 text-yellow-500" />
           <div>Most Active Communities</div>
         </div>

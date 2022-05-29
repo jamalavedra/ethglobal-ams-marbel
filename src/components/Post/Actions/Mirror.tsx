@@ -204,7 +204,7 @@ const Mirror: FC<Props> = ({ post }) => {
       disabled={typedDataLoading || writeLoading}
     >
       <div className="flex items-center space-x-1 text-brand">
-        <div className="p-1.5 rounded-full hover:bg-opacity-20 hover:bg-brand-300">
+        <div>
           {typedDataLoading ||
           signLoading ||
           broadcastLoading ||

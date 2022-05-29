@@ -46,7 +46,6 @@ export default function ViewCommunity({ community }: { community: Community }) {
     }
   })
 
-
   if (error) return <Custom500 />
   if (loading || !data)
     return (
@@ -78,7 +77,7 @@ export default function ViewCommunity({ community }: { community: Community }) {
             post={data.publication}
           />
           {/* <Feed post={data.publication} type="community post" /> */}
-          <Feed post={data.publication} sortCriteria={feedType}/>
+          <Feed post={data.publication} sortCriteria={feedType} />
         </GridItemTwelve>
       </GridLayout>
     </>

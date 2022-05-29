@@ -56,8 +56,8 @@ const FeedType: FC<Props> = ({ setFeedType, feedType, post }) => {
           icon={<ClockIcon className="w-4 h-4" />}
           type="LATEST"
         />
-         </div>
-        <NewPostModal post={post} />
+      </div>
+      <NewPostModal post={post} />
     </div>
   )
 }
