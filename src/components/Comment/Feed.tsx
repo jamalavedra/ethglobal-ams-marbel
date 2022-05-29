@@ -111,7 +111,6 @@ const Feed: FC<Props> = ({
         setPageInfo(data?.publications?.pageInfo)
         // stats?.totalAmountOfMirrors
         setPublications(data?.publications?.items)
-        console.log(data?.publications?.items)
         consoleLog(
           'Query',
           '#8b5cf6',

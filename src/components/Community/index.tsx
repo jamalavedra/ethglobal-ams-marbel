@@ -1,20 +1,16 @@
 import { gql, useQuery } from '@apollo/client'
-import Feed from '@components/Comment/Feed'
-import {
-  GridItemEight,
-  GridItemFour,
-  GridItemTwelve,
-  GridLayout
-} from '@components/GridLayout'
+import Feed from './Feed'
+import { GridItemTwelve, GridLayout } from '@components/GridLayout'
 import { Spinner } from '@components/UI/Spinner'
 import { CommunityFields } from '@gql/CommunityFields'
 import consoleLog from '@lib/consoleLog'
 import { useRouter } from 'next/router'
-import React from 'react'
 import Custom404 from 'src/pages/404'
 import Custom500 from 'src/pages/500'
 // import { getFeed } from '@pages/api/community/feed' // Repo
 import { Community } from '@generated/lenstertypes'
+import FeedType from './FeedType'
+import React, { useState } from 'react'
 
 import Details from './Details'
 
@@ -32,13 +28,16 @@ const COMMUNITY_QUERY = gql`
 export default function ViewCommunity({ community }: { community: Community }) {
   // console.log(community)
 
+  const [feedType, setFeedType] = useState<string>('TOP')
+
   const {
     query: { id }
   } = useRouter()
   const { data, loading, error } = useQuery(COMMUNITY_QUERY, {
     variables: { request: { publicationId: id } },
     skip: !id,
-    onCompleted() {
+    onCompleted(data) {
+      console.log('COMMUNITY_QUERY', data)
       consoleLog(
         'Query',
         '#8b5cf6',
@@ -46,6 +45,7 @@ export default function ViewCommunity({ community }: { community: Community }) {
       )
     }
   })
+
 
   if (error) return <Custom500 />
   if (loading || !data)
@@ -72,37 +72,15 @@ export default function ViewCommunity({ community }: { community: Community }) {
         </GridItemTwelve>
 
         <GridItemTwelve className="space-y-5">
-          <Feed post={data.publication} type="community post" />
+          <FeedType
+            setFeedType={setFeedType}
+            feedType={feedType}
+            post={data.publication}
+          />
+          {/* <Feed post={data.publication} type="community post" /> */}
+          <Feed post={data.publication} sortCriteria={feedType}/>
         </GridItemTwelve>
       </GridLayout>
     </>
   )
 }
-
-// export async function getServerSideProps(context: any) {
-//   // Collect repo from URL
-//   const { id }: { id: string } = context.query
-
-//   try {
-//     // Throw if params not present
-//     if (!id) throw new Error()
-//     console.log(id)
-//     // Collect repo (check admin access) or throw
-//     const collections: Community[] = await getFeed(id)
-//     if (collections.length === 0) throw new Error()
-
-//     return {
-//       props: {
-//         collections
-//       }
-//     }
-//   } catch {
-//     // On error, redirect
-//     return {
-//       redirect: {
-//         destination: '/',
-//         permanent: false
-//       }
-//     }
-//   }
-// }

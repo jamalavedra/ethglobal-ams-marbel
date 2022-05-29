@@ -11,9 +11,9 @@ interface Props {
 
 const CommunityProfile: FC<Props> = ({ community }) => {
   return (
-    <div className="flex justify-between items-center hover:bg-gray-50">
+    <div className="flex justify-between items-center ">
       <Link href={`/communities/${community?.id}`}>
-        <a href={`/communities/${community?.id}`}>
+        <a href={`/communities/${community?.id}`} className='hover:bg-gray-50 w-full'>
           <div className="flex items-center space-x-3">
             <img
               src={imagekitURL(

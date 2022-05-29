@@ -1,13 +1,11 @@
-import { gql, useQuery } from '@apollo/client'
+import { gql } from '@apollo/client'
 import { LensterPost } from '@generated/lenstertypes'
-import consoleLog from '@lib/consoleLog'
 import clsx from 'clsx'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
-import React, { FC, ReactChild, useContext, useState } from 'react'
+import React, { FC, useState } from 'react'
 import Markup from '@components/Shared/Markup'
 import imagekitURL from '@lib/imagekitURL'
-import AppContext from '@components/utils/AppContext'
 
 dayjs.extend(relativeTime)
 
@@ -26,43 +24,8 @@ interface Props {
 }
 
 const Details: FC<Props> = ({ community }) => {
-  const { currentUser } = useContext(AppContext)
-  const [joined, setJoined] = useState<boolean>(false)
-  const { loading: joinLoading } = useQuery(HAS_JOINED_QUERY, {
-    variables: {
-      request: {
-        collectRequests: {
-          publicationIds: community.id,
-          walletAddress: currentUser?.ownedBy
-        }
-      }
-    },
-    skip: !currentUser || !community,
-    onCompleted(data) {
-      setJoined(data?.hasCollected[0]?.results[0]?.collected)
-      consoleLog(
-        'Query',
-        '#8b5cf6',
-        `Fetched has joined check Community:${community?.id} Joined:${joined}`
-      )
-    }
-  })
-
   const [showMore, setShowMore] = useState<boolean>(
     community?.metadata?.description.length > 150
-  )
-
-  const MetaDetails = ({
-    children,
-    icon
-  }: {
-    children: ReactChild
-    icon: ReactChild
-  }) => (
-    <div className="flex gap-2 items-center">
-      {icon}
-      {children}
-    </div>
   )
 
   return (
@@ -86,25 +49,27 @@ const Details: FC<Props> = ({ community }) => {
       </div>
       <div className="space-y-5">
         {community?.metadata?.description && (
-          <div className="mr-0 w-96 sm:mr-10 p-5 leading-7 ¡break-words">
+          <div className="w-96 leading-7 ¡break-words">
             <div
               className={clsx({
                 'line-clamp-5 h-14 text-transparent bg-clip-text bg-gradient-to-b from-black dark:from-white to-gray-400 dark:to-gray-900':
                   showMore
               })}
             >
-              <div className="leading-7 whitespace-pre-wrap break-words linkify">
+              <div className="leading-7 text-center whitespace-pre-wrap break-words linkify">
                 <Markup>{community?.metadata?.content}</Markup>
               </div>
             </div>
             {showMore && (
-              <button
-                type="button"
-                className="mt-2 text-sm font-bold"
-                onClick={() => setShowMore(!showMore)}
-              >
-                Show more
-              </button>
+              <div className="flex justify-center">
+                <button
+                  type="button"
+                  className="mt-2 text-sm font-bold"
+                  onClick={() => setShowMore(!showMore)}
+                >
+                  Show more
+                </button>
+              </div>
             )}
           </div>
         )}
