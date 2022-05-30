@@ -1,7 +1,6 @@
 import LensHubProxy from '@abis/LensHubProxy.json'
 import { gql, useMutation } from '@apollo/client'
 import { Spinner } from '@components/UI/Spinner'
-import AppContext from '@components/utils/AppContext'
 import { LensterPost } from '@generated/lenstertypes'
 import { CreateMirrorBroadcastItemResult } from '@generated/types'
 import { HeartIcon } from '@heroicons/react/solid'
@@ -29,6 +28,10 @@ import {
 } from 'wagmi'
 import { BROADCAST_MUTATION } from '@gql/BroadcastMutation'
 import trackEvent from '@lib/trackEvent'
+import HAS_MIRRORED from '@gql/has-mirrored'
+import { useQuery } from '@apollo/client'
+import AppContext from '@components/utils/AppContext'
+import { HasMirroredResult } from '@generated/types'
 
 const CREATE_MIRROR_TYPED_DATA_MUTATION = gql`
   mutation CreateMirrorTypedData($request: CreateMirrorRequest!) {
@@ -72,6 +75,22 @@ const Mirror: FC<Props> = ({ post }) => {
   const { currentUser } = useContext(AppContext)
   const { activeChain } = useNetwork()
   const { data: account } = useAccount()
+  const [isMirroring, setMirroring] = useState<boolean>(false)
+
+  const { data: hasMirrored } = useQuery<{ hasMirrored: HasMirroredResult[] }>(
+    HAS_MIRRORED,
+    {
+      variables: { profileId: post.profile?.id, publicationIds: [post.id] },
+      skip: !post.profile?.id,
+      onCompleted(data) {
+        setMirroring(
+          data.hasMirrored?.[0]?.results?.find(
+            (mirroredPost) => mirroredPost.publicationId === post?.id
+          )?.mirrored ?? false
+        )
+      }
+    }
+  )
 
   useEffect(() => {
     if (post?.stats?.totalAmountOfMirrors) {
@@ -201,7 +220,7 @@ const Mirror: FC<Props> = ({ post }) => {
     <motion.button
       whileTap={{ scale: 0.9 }}
       onClick={createMirror}
-      disabled={typedDataLoading || writeLoading}
+      disabled={typedDataLoading || writeLoading || isMirroring}
     >
       <div className="flex items-center space-x-1 text-brand">
         <div>
@@ -215,7 +234,11 @@ const Mirror: FC<Props> = ({ post }) => {
           ) : (
             <div className="flex space-x-2 text-gray-400">
               <div className="text-md">{humanize(count)}</div>
-              <HeartIconOutlined className="w-5 h-5" />
+              {isMirroring ? (
+                <HeartIcon className="w-5 h-5" />
+              ) : (
+                <HeartIconOutlined className="w-5 h-5" />
+              )}
             </div>
           )}
         </div>
