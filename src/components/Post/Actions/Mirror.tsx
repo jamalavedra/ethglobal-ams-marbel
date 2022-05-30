@@ -77,20 +77,17 @@ const Mirror: FC<Props> = ({ post }) => {
   const { data: account } = useAccount()
   const [isMirroring, setMirroring] = useState<boolean>(false)
 
-  const { data: hasMirrored } = useQuery<{ hasMirrored: HasMirroredResult[] }>(
-    HAS_MIRRORED,
-    {
-      variables: { profileId: post.profile?.id, publicationIds: [post.id] },
-      skip: !post.profile?.id,
-      onCompleted(data) {
-        setMirroring(
-          data.hasMirrored?.[0]?.results?.find(
-            (mirroredPost) => mirroredPost.publicationId === post?.id
-          )?.mirrored ?? false
-        )
-      }
+  useQuery<{ hasMirrored: HasMirroredResult[] }>(HAS_MIRRORED, {
+    variables: { profileId: post.profile?.id, publicationIds: [post.id] },
+    skip: !post.profile?.id,
+    onCompleted(data) {
+      setMirroring(
+        data.hasMirrored?.[0]?.results?.find(
+          (mirroredPost) => mirroredPost.publicationId === post?.id
+        )?.mirrored ?? false
+      )
     }
-  )
+  })
 
   useEffect(() => {
     if (post?.stats?.totalAmountOfMirrors) {
@@ -237,7 +234,7 @@ const Mirror: FC<Props> = ({ post }) => {
               {isMirroring ? (
                 <HeartIcon className="w-5 h-5" />
               ) : (
-                <HeartIconOutlined className="w-5 h-5" />
+                <HeartIconOutlined className="w-5 h-5 hover:text-gray-900" />
               )}
             </div>
           )}

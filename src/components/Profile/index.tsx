@@ -15,7 +15,7 @@ import { Spinner } from '@components/UI/Spinner'
 import { ChatAlt2Icon } from '@heroicons/react/solid'
 import humanize from '@lib/humanize'
 import clsx from 'clsx'
-import { ChevronUpIcon } from '@heroicons/react/outline'
+import { HeartIcon } from '@heroicons/react/outline'
 
 interface FeedLinkProps {
   name: string
@@ -146,7 +146,7 @@ const ViewProfile: NextPage = () => {
             <GridItemSix>
               <FeedLink
                 name="Upvotes"
-                icon={<ChevronUpIcon className="w-4 h-4" />}
+                icon={<HeartIcon className="w-4 h-4" />}
                 type="COMMENT"
                 count={profile?.stats?.totalMirrors}
               />

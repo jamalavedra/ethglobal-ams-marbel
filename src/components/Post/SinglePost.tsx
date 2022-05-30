@@ -38,14 +38,6 @@ const SinglePost: FC<Props> = ({
         <PostType post={post} hideType={hideType} />
 
         <div className="flex space-x-3 w-full">
-          {!hideType && !postPage && (
-            <div>
-              <p className="text-sm text-gray-500 leading-7">
-                {index + 1 + '.'}
-              </p>
-            </div>
-          )}
-
           <div className="flex-1">
             <PostBody post={post} hideType={!hideType && !postPage} />
             <div

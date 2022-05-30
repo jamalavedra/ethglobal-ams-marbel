@@ -24,7 +24,7 @@ const UserProfile: FC<Props> = ({
     <div className="flex justify-between items-center">
       <Link href={`/u/${profile?.handle}`}>
         <a href={`/u/${profile?.handle}`}>
-          <div className="flex items-top space-x-3">
+          <div className="flex items-center space-x-3">
             <img
               src={getAvatar(profile)}
               loading="lazy"
@@ -36,12 +36,13 @@ const UserProfile: FC<Props> = ({
               width={isBig ? 56 : 40}
               alt={profile?.handle}
             />
-            <div className="flex gap-1 justify-start items-start  truncate max-w-sm">
-              <div
-                className={clsx(isBig ? 'font-bold' : 'text-md font-medium')}
-              >
-                {profile?.name ?? profile?.handle}
+            <div>
+              <div className="flex gap-1 items-center truncate max-w-sm">
+                <div className={clsx(isBig ? 'font-bold' : 'text-md')}>
+                  {profile?.name ?? profile?.handle}
+                </div>
               </div>
+              <Slug className="text-sm" slug={profile?.handle} prefix="@" />
             </div>
           </div>
         </a>

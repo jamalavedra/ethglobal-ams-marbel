@@ -5,11 +5,14 @@ import React, { FC, useState } from 'react'
 import Markup from '@components/Shared/Markup'
 import Link from 'next/link'
 import UserProfile from '@components/Shared/UserProfile'
-
+import dayjs from 'dayjs'
+import relativeTime from 'dayjs/plugin/relativeTime'
 interface Props {
   post: LensterPost
   hideType: boolean
 }
+
+dayjs.extend(relativeTime)
 
 const PostBody: FC<Props> = ({ post, hideType }) => {
   const { pathname } = useRouter()
@@ -33,18 +36,26 @@ const PostBody: FC<Props> = ({ post, hideType }) => {
             )}
 
             <div className="py-5 leading-7 whitespace-pre-wrap break-words linkify">
-              <UserProfile
-                profile={
-                  !!post?.collectedBy?.defaultProfile
-                    ? post?.collectedBy?.defaultProfile
-                    : post?.__typename === 'Mirror'
-                    ? post?.mirrorOf?.profile
-                    : post?.profile
-                }
-              />
-              <div className="pt-5">
-                <Markup>{post?.metadata?.description}</Markup>
+              <div className="flex justify-between pb-4 space-x-1.5">
+                <UserProfile
+                  profile={
+                    !!post?.collectedBy?.defaultProfile
+                      ? post?.collectedBy?.defaultProfile
+                      : post?.__typename === 'Mirror'
+                      ? post?.mirrorOf?.profile
+                      : post?.profile
+                  }
+                />
+                <Link href={`/posts/${post?.id}`}>
+                  <a
+                    href={`/posts/${post?.id}`}
+                    className="text-sm text-gray-500"
+                  >
+                    {dayjs(new Date(post?.createdAt)).fromNow()}
+                  </a>
+                </Link>
               </div>
+              <Markup>{post?.metadata?.description}</Markup>
             </div>
           </div>
         ) : (
