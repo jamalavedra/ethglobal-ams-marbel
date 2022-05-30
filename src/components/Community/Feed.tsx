@@ -1,5 +1,5 @@
 import { gql, useQuery } from '@apollo/client'
-import SinglePost from '@components/Post/SinglePost'
+import FeedSinglePost from '@components/Post/FeedSinglePost'
 import { EmptyState } from '@components/UI/EmptyState'
 import { ErrorMessage } from '@components/UI/ErrorMessage'
 import { Spinner } from '@components/UI/Spinner'
@@ -104,18 +104,40 @@ const Feed: FC<Props> = ({ post, sortCriteria }) => {
         />
       )}
       <ErrorMessage title="Failed to load comment feed" error={error} />
+
       {!error && !loading && (
         <>
-          <div className="space-y-3">
-            {links?.map((post: LensterPost, index: number) => (
-              <SinglePost
-                key={`${post?.id}_${index}`}
-                index={index}
-                post={post}
-                hideType={false}
-              />
-            ))}
+          <div className="overflow-x-auto">
+            <table className="min-w-full text-sm divide-y-2 divide-gray-200">
+              <thead>
+                <tr>
+                  <th className="px-4 py-2 font-medium text-left text-gray-500 whitespace-nowrap">
+                    Topic
+                  </th>
+                  <th className="px-4 py-2 font-medium text-left text-gray-500 whitespace-nowrap">
+                    Upvotes
+                  </th>
+                  <th className="px-4 py-2 font-medium text-left text-gray-500 whitespace-nowrap">
+                    Replies
+                  </th>
+                  <th className="px-4 py-2 font-medium text-left text-gray-500 whitespace-nowrap">
+                    Activity
+                  </th>
+                </tr>
+              </thead>
+
+              <tbody className="divide-y divide-gray-200">
+                {links?.map((post: LensterPost, index: number) => (
+                  <FeedSinglePost
+                    key={`${post?.id}_${index}`}
+                    index={index}
+                    post={post}
+                  />
+                ))}
+              </tbody>
+            </table>
           </div>
+
           {pageInfo?.next && links?.items?.length !== pageInfo?.totalCount && (
             <span ref={observe} className="flex justify-center p-5">
               <Spinner size="sm" />

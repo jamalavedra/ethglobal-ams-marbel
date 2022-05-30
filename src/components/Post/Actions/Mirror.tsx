@@ -1,11 +1,11 @@
 import LensHubProxy from '@abis/LensHubProxy.json'
 import { gql, useMutation } from '@apollo/client'
-import { Button } from '@components/UI/Button'
 import { Spinner } from '@components/UI/Spinner'
 import AppContext from '@components/utils/AppContext'
 import { LensterPost } from '@generated/lenstertypes'
 import { CreateMirrorBroadcastItemResult } from '@generated/types'
-import { ChevronUpIcon } from '@heroicons/react/solid'
+import { HeartIcon } from '@heroicons/react/solid'
+import { HeartIcon as HeartIconOutlined } from '@heroicons/react/outline'
 import consoleLog from '@lib/consoleLog'
 import humanize from '@lib/humanize'
 import omit from '@lib/omit'
@@ -213,12 +213,10 @@ const Mirror: FC<Props> = ({ post }) => {
               <Spinner size="xs" />
             </div>
           ) : (
-            <Button outline size="lg">
-              <>
-                <ChevronUpIcon className="w-4 h-4" />
-                <div className="text-xs">{humanize(count)}</div>
-              </>
-            </Button>
+            <div className="flex space-x-2 text-gray-400">
+              <div className="text-md">{humanize(count)}</div>
+              <HeartIconOutlined className="w-5 h-5" />
+            </div>
           )}
         </div>
       </div>

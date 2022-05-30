@@ -28,7 +28,7 @@ const Delete: FC<Props> = ({ post }) => {
           hidePost({ variables: { request: { publicationId: post?.id } } })
         }
       }}
-      className="text-xs text-gray-400 hover:underline"
+      className="text-xs cursor-pointer font-medium text-gray-400 hover:underline"
     >
       {' | ' + ' delete'}
     </span>

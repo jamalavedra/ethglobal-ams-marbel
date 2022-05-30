@@ -16,7 +16,7 @@ import Custom500 from 'src/pages/500'
 import AppContext from '@components/utils/AppContext'
 
 import IPFSHash from './IPFSHash'
-import SinglePost from './SinglePost'
+import ForumPost from './ForumPost'
 
 export const POST_QUERY = gql`
   query Post(
@@ -99,7 +99,7 @@ const ViewPost: NextPage = () => {
   return (
     <GridLayout>
       <GridItemEight>
-        <SinglePost post={post} postPage={true} />
+        <ForumPost post={post} />
         <div className="ml-7">
           <Feed
             comments={true}

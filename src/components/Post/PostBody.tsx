@@ -4,6 +4,7 @@ import { useRouter } from 'next/router'
 import React, { FC, useState } from 'react'
 import Markup from '@components/Shared/Markup'
 import Link from 'next/link'
+import UserProfile from '@components/Shared/UserProfile'
 
 interface Props {
   post: LensterPost
@@ -26,18 +27,29 @@ const PostBody: FC<Props> = ({ post, hideType }) => {
             })}
           >
             {post?.metadata?.content?.length > 0 && (
-              <h1 className="text-2xl font-medium border-b pb-5 border-gray-100">
+              <h1 className="text-2xl font-medium border-b pb-3 border-gray-200">
                 <Markup>{post?.metadata?.content}</Markup>
               </h1>
             )}
 
-            <div className="p-5 leading-7 whitespace-pre-wrap break-words linkify">
-              <Markup>{post?.metadata?.description}</Markup>
+            <div className="py-5 leading-7 whitespace-pre-wrap break-words linkify">
+              <UserProfile
+                profile={
+                  !!post?.collectedBy?.defaultProfile
+                    ? post?.collectedBy?.defaultProfile
+                    : post?.__typename === 'Mirror'
+                    ? post?.mirrorOf?.profile
+                    : post?.profile
+                }
+              />
+              <div className="pt-5">
+                <Markup>{post?.metadata?.description}</Markup>
+              </div>
             </div>
           </div>
         ) : (
           <Link href={`/posts/${post?.id}`}>
-            <a className="hover:underline" href={`/posts/${post?.id}`}>
+            <a className="hover:underline text-lg" href={`/posts/${post?.id}`}>
               <Markup>{post?.metadata?.content}</Markup>
             </a>
           </Link>
