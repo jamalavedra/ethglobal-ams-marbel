@@ -98,12 +98,12 @@ const Feed: FC<Props> = ({ post, sortCriteria }) => {
       if (sortCriteria == 'TRENDING')
         return (
           calculateScore(
-            b.stats.totalAmountOfMirrors,
+            b.stats.totalAmountOfMirrors+b.stats.totalAmountOfComments,
             diff_hours(new Date(b.createdAt), new Date()),
             1.8
           ) -
           calculateScore(
-            a.stats.totalAmountOfMirrors,
+            a.stats.totalAmountOfMirrors+a.stats.totalAmountOfComments,
             diff_hours(new Date(a.createdAt), new Date()),
             1.8
           )
