@@ -28,7 +28,7 @@ const COMMUNITY_QUERY = gql`
 export default function ViewCommunity({ community }: { community: Community }) {
   // console.log(community)
 
-  const [feedType, setFeedType] = useState<string>('TOP')
+  const [feedType, setFeedType] = useState<string>('TRENDING')
 
   const {
     query: { id }
