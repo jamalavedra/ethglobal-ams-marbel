@@ -110,9 +110,6 @@ const ViewPost: NextPage = () => {
           isFollowing={data?.doesFollow[0]?.follows}
         />
       </GridItemEight>
-      <GridItemFour className="space-y-5">
-        <IPFSHash ipfsHash={post?.onChainContentURI} />
-      </GridItemFour>
     </GridLayout>
   )
 }
