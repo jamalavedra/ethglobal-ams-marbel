@@ -29,6 +29,16 @@ const COMMENT_FEED_QUERY = gql`
   ${CommentFields}
 `
 
+function diff_hours(dt2: any, dt1: any) {
+  var diff = (dt2.getTime() - dt1.getTime()) / 1000
+  diff /= 60 * 60
+  return Math.abs(Math.round(diff))
+}
+
+function calculateScore(votes: number, itemHourAge: number, gravity: number) {
+  return votes / Math.pow(itemHourAge + 2, gravity)
+}
+
 interface Props {
   post: LensterPost
   sortCriteria: String
@@ -85,6 +95,19 @@ const Feed: FC<Props> = ({ post, sortCriteria }) => {
         return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
       if (sortCriteria == 'TOP')
         return b.stats.totalAmountOfMirrors - a.stats.totalAmountOfMirrors
+      if (sortCriteria == 'TRENDING')
+        return (
+          calculateScore(
+            b.stats.totalAmountOfMirrors,
+            diff_hours(new Date(b.createdAt), new Date()),
+            1.8
+          ) -
+          calculateScore(
+            a.stats.totalAmountOfMirrors,
+            diff_hours(new Date(a.createdAt), new Date()),
+            1.8
+          )
+        )
     })
   }, [data, sortCriteria])
 

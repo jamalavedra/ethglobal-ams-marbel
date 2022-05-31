@@ -230,7 +230,7 @@ const Mirror: FC<Props> = ({ post }) => {
             </div>
           ) : (
             <div className="flex space-x-2 text-gray-400">
-              <div className="text-md">{humanize(count)}</div>
+              <div className="text-sm flex items-center">{humanize(count)}</div>
               {isMirroring ? (
                 <HeartIcon className="w-5 h-5" />
               ) : (

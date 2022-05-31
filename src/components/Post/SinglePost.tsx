@@ -15,6 +15,7 @@ import Mirror from './Actions/Mirror'
 import { useContext } from 'react'
 import Delete from './Actions/Delete'
 import AppContext from '@components/utils/AppContext'
+import Comment from './Actions/Comment'
 
 interface Props {
   post: LensterPost
@@ -30,61 +31,33 @@ const SinglePost: FC<Props> = ({
   hideType = false
 }) => {
   const { currentUser } = useContext(AppContext)
-  const postType = post?.metadata?.attributes[0]?.value
 
   return (
     <Card>
       <CardBody>
         <PostType post={post} hideType={hideType} />
 
-        <div className="flex space-x-3 w-full">
-          <div className="flex-1">
-            <PostBody post={post} hideType={!hideType && !postPage} />
-            <div
-              className={`flex ${!hideType && !postPage ? '' : 'px-5'} py-2`}
-            >
-              <div>
-                <Author
-                  post={post}
-                  profile={
-                    post?.__typename === 'Mirror'
-                      ? post?.mirrorOf?.profile
-                      : post?.profile
-                  }
-                />
-              </div>
-              <div className="flex ml-1">
-                <Link href={`/posts/${post?.id}`}>
-                  <a href={`/posts/${post?.id}`}>
-                    <span className="text-xs text-gray-400 hover:underline">
-                      {' | ' +
-                        humanize(post?.stats?.totalAmountOfComments) +
-                        ' comments'}
-                    </span>
-                    {currentUser?.id === post?.profile?.id && (
-                      <Delete post={post} />
-                    )}
-                  </a>
-                </Link>
-              </div>
+        <div className="w-full pb-4">
+          <PostBody post={post} hideType={false} />
+          <div className="flex pl-14 py-2 w-full">
+            <div className="grow">
+              <Link href={`/posts/${post?.id}`}>
+                <a
+                  href={`/posts/${post?.id}`}
+                  className="text-xs font-medium text-gray-400 hover:underline"
+                >
+                  {humanize(post?.stats?.totalAmountOfComments) + ' Replies'}
+                </a>
+              </Link>
+              {currentUser?.id === post?.profile?.id && <Delete post={post} />}
+            </div>
+
+            <div className="flex gap-8 items-center">
+              <Mirror post={post} />
+              <Comment post={post} />
             </div>
           </div>
-          {!hideType && postType === 'community post' && (
-            <div>
-              <Mirror post={post} />
-            </div>
-          )}
         </div>
-
-        {/* {post?.metadata?.media?.length > 0 ? (
-          <Attachments attachments={post?.metadata?.media} />
-        ) : (
-          post?.metadata?.content &&
-   
-          !!getURLFromPublication(post?.metadata?.content) && (
-            <IFramely url={getURLFromPublication(post?.metadata?.content)} />
-          )
-        )} */}
       </CardBody>
     </Card>
   )

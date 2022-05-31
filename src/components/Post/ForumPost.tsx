@@ -3,8 +3,8 @@
 import { Card, CardBody } from '@components/UI/Card'
 import { LensterPost } from '@generated/lenstertypes'
 // import getURLFromPublication from '@lib/getURLFromPublication'
+import dayjs from 'dayjs'
 
-import Link from 'next/link'
 import React, { FC } from 'react'
 import humanize from '@lib/humanize'
 
@@ -14,6 +14,7 @@ import Mirror from './Actions/Mirror'
 import { useContext } from 'react'
 import Delete from './Actions/Delete'
 import AppContext from '@components/utils/AppContext'
+import Comment from './Actions/Comment'
 
 interface Props {
   post: LensterPost
@@ -23,40 +24,57 @@ const ForumPost: FC<Props> = ({ post }) => {
   const { currentUser } = useContext(AppContext)
 
   return (
-    <Card>
+    <Card className="border-b border-gray-200">
       <CardBody>
         <PostType post={post} hideType={true} />
 
-        <div className="w-full">
+        <div className="w-full pb-4">
           <PostBody post={post} hideType={false} />
-          <div className="flex py-2 w-full ml-1">
+          <div className="flex pl-14 py-2 w-full">
             <div className="grow">
-              <Link href={`/posts/${post?.id}`}>
-                <a
-                  href={`/posts/${post?.id}`}
-                  className="text-xs font-medium text-gray-400 hover:underline"
-                >
-                  {humanize(post?.stats?.totalAmountOfComments) + ' Replies'}
-                </a>
-              </Link>
               {currentUser?.id === post?.profile?.id && <Delete post={post} />}
             </div>
 
-            <div>
+            <div className="flex gap-8 items-center">
               <Mirror post={post} />
+              <Comment post={post} />
+            </div>
+          </div>
+          <div className="ml-14 max-w-xl border border-gray-200 bg-gray-50 p-4 rounded">
+            <div className="grid grid-cols-12 gap-4">
+              <div className="col-span-3">
+                <div>
+                  <p className="text-xs font-medium text-gray-500">
+                    Created on
+                  </p>
+                  <p className="text-sm font-medium text-gray-800">
+                    {dayjs(new Date(post?.createdAt)).format('MMMM D YYYY')}
+                  </p>
+                </div>
+              </div>
+              <div className="col-span-3">
+                <div>
+                  <p className="text-2xl font-medium text-center text-gray-800">
+                    {humanize(post?.stats?.totalAmountOfComments)}
+                  </p>
+                  <p className="text-center text-xs font-medium text-gray-500">
+                    replies
+                  </p>
+                </div>
+              </div>
+              <div className="col-span-3">
+                <div>
+                  <p className="text-2xl font-medium text-center text-gray-800">
+                    {humanize(post?.stats?.totalAmountOfMirrors)}
+                  </p>
+                  <p className="text-center text-xs font-medium text-gray-500">
+                    likes
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-
-        {/* {post?.metadata?.media?.length > 0 ? (
-          <Attachments attachments={post?.metadata?.media} />
-        ) : (
-          post?.metadata?.content &&
-   
-          !!getURLFromPublication(post?.metadata?.content) && (
-            <IFramely url={getURLFromPublication(post?.metadata?.content)} />
-          )
-        )} */}
       </CardBody>
     </Card>
   )

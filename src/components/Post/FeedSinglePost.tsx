@@ -1,7 +1,6 @@
 // import Attachments from '@components/Shared/Attachments'
 // import IFramely from '@components/Shared/IFramely'
 import Author from '@components/Shared/Author'
-import { Card, CardBody } from '@components/UI/Card'
 import { LensterPost } from '@generated/lenstertypes'
 // import getURLFromPublication from '@lib/getURLFromPublication'
 import dayjs from 'dayjs'
@@ -64,58 +63,6 @@ const SinglePost: FC<Props> = ({ post, index = 0 }) => {
         {dayjs(new Date(post?.createdAt)).fromNow()}
       </td>
     </tr>
-
-    // <Card>
-    //   <CardBody>
-    //     <PostType post={post} hideType={true} />
-
-    //     <div className="flex space-x-3 w-full">
-
-    // <div>
-    //   <p className="text-sm text-gray-500 leading-7">
-    //     {index + 1 + '.'}
-    //   </p>
-    // </div>
-
-    //       <div className="flex-1">
-    //         <PostBody post={post} hideType={true} />
-    //         <div
-    //           className={`flex  py-2`}
-    //         >
-    //           <div>
-    //             <Author
-    //               post={post}
-    //               profile={
-    //                 post?.__typename === 'Mirror'
-    //                   ? post?.mirrorOf?.profile
-    //                   : post?.profile
-    //               }
-    //             />
-    //           </div>
-    //           <div className="flex ml-1">
-    //             <Link href={`/posts/${post?.id}`}>
-    //               <a href={`/posts/${post?.id}`}>
-    //                 <span className="text-xs text-gray-400 hover:underline">
-    //                   {' | ' +
-    //                     humanize(post?.stats?.totalAmountOfComments) +
-    //                     ' comments'}
-    //                 </span>
-    //                 {currentUser?.id === post?.profile?.id && (
-    //                   <Delete post={post} />
-    //                 )}
-    //               </a>
-    //             </Link>
-    //           </div>
-    //         </div>
-    //       </div>
-
-    //         <div>
-    //           <Mirror post={post} />
-    //         </div>
-
-    //     </div>
-    //   </CardBody>
-    // </Card>
   )
 }
 

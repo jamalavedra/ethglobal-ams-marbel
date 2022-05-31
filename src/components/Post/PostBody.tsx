@@ -29,12 +29,6 @@ const PostBody: FC<Props> = ({ post, hideType }) => {
                 showMore && pathname !== '/posts/[id]'
             })}
           >
-            {post?.metadata?.content?.length > 0 && (
-              <h1 className="text-2xl font-medium border-b pb-3 border-gray-200">
-                <Markup>{post?.metadata?.content}</Markup>
-              </h1>
-            )}
-
             <div className="py-5 leading-7 whitespace-pre-wrap break-words linkify">
               <div className="flex justify-between pb-4 space-x-1.5">
                 <UserProfile
@@ -55,7 +49,9 @@ const PostBody: FC<Props> = ({ post, hideType }) => {
                   </a>
                 </Link>
               </div>
-              <Markup>{post?.metadata?.description}</Markup>
+              <div className="ml-14">
+                <Markup>{post?.metadata?.description}</Markup>
+              </div>
             </div>
           </div>
         ) : (

@@ -171,7 +171,7 @@ const Feed: FC<Props> = ({
       <ErrorMessage title="Failed to load comment feed" error={error} />
       {!error && !loading && (
         <>
-          <div className={`${!comments ? 'space-y-3' : ''}`}>
+          <div className={`divide-y-[1px] ${!comments ? 'space-y-3' : ''}`}>
             {stableSort(publications, getComparator(order))?.map(
               (post: LensterPost, index: number) => (
                 <SinglePost

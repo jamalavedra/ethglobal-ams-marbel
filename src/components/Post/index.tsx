@@ -100,17 +100,15 @@ const ViewPost: NextPage = () => {
     <GridLayout>
       <GridItemEight>
         <ForumPost post={post} />
-        <div className="ml-7">
-          <Feed
-            comments={true}
-            post={post}
-            onlyFollowers={
-              post?.referenceModule?.__typename ===
-              'FollowOnlyReferenceModuleSettings'
-            }
-            isFollowing={data?.doesFollow[0]?.follows}
-          />
-        </div>
+        <Feed
+          comments={true}
+          post={post}
+          onlyFollowers={
+            post?.referenceModule?.__typename ===
+            'FollowOnlyReferenceModuleSettings'
+          }
+          isFollowing={data?.doesFollow[0]?.follows}
+        />
       </GridItemEight>
       <GridItemFour className="space-y-5">
         <IPFSHash ipfsHash={post?.onChainContentURI} />

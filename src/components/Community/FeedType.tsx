@@ -1,5 +1,5 @@
 import { TrendingUpIcon } from '@heroicons/react/outline'
-import { ClockIcon } from '@heroicons/react/solid'
+import { ClockIcon, FireIcon } from '@heroicons/react/solid'
 import trackEvent from '@lib/trackEvent'
 import clsx from 'clsx'
 import React, { Dispatch, FC, ReactChild } from 'react'
@@ -46,6 +46,11 @@ const FeedType: FC<Props> = ({ setFeedType, feedType, post }) => {
   return (
     <div className="flex">
       <div className="flex grow overflow-x-auto gap-3 px-5 pb-2 mt-3 sm:px-0 sm:mt-0 md:pb-0">
+        <FeedLink
+          name="Trending"
+          icon={<FireIcon className="w-4 h-4" />}
+          type="TRENDING"
+        />
         <FeedLink
           name="Top"
           icon={<TrendingUpIcon className="w-4 h-4" />}

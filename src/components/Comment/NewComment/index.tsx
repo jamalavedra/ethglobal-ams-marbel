@@ -225,7 +225,7 @@ const NewComment: FC<Props> = ({ refetch, post, type }) => {
         version: '1.0.0',
         metadata_id: uuidv4(),
         description: commentContent,
-        content: '',
+        content: commentContent,
         external_url: null,
         image: attachments.length > 0 ? attachments[0]?.item : null,
         imageMimeType: attachments.length > 0 ? attachments[0]?.type : null,
@@ -265,6 +265,7 @@ const NewComment: FC<Props> = ({ refetch, post, type }) => {
     <Card>
       <div className="px-5 pt-5 pb-3">
         <div className="space-y-1">
+          <p className="font-medium text-lg">Reply:</p>
           {error && (
             <ErrorMessage
               className="mb-3"
