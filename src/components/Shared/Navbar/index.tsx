@@ -6,7 +6,7 @@ import { useQuery } from '@apollo/client'
 import imagekitURL from '@lib/imagekitURL'
 import { CommunityFields } from '@gql/CommunityFields'
 import { gql } from '@apollo/client'
-import React, { FC } from 'react'
+import React, { FC, useEffect } from 'react'
 import { CommentFields } from '@gql/CommentFields'
 import { MirrorFields } from '@gql/MirrorFields'
 import { PostFields } from '@gql/PostFields'
@@ -62,6 +62,10 @@ const Navbar: FC = () => {
     pathname,
     query: { id }
   } = useRouter()
+
+  useEffect(() => {
+    setPageInfo({})
+  }, [pathname])
   useQuery(COMMUNITY_QUERY, {
     variables: { request: { publicationId: id } },
     onCompleted(data) {
@@ -110,14 +114,14 @@ const Navbar: FC = () => {
                   )}
                 </Disclosure.Button>
 
-                {router.pathname === '/' ? (
+                {pathname === '/' ? (
                   <Link href="/">
                     <a className="text-3xl flex font-black">
                       <img className="w-12 h-12" src="/logo.svg" alt="Marbel" />
                       <p className="pt-2 text-2xl font-medium">{'Marbel'}</p>
                     </a>
                   </Link>
-                ) : pageInfo ? (
+                ) : pageInfo.id ? (
                   <Link href={'/communities/' + pageInfo.id}>
                     <a className="flex cursor-pointer">
                       <img
