@@ -30,6 +30,7 @@ const PostBody: FC<Props> = ({ post, hideType = true }) => {
             })}
           >
             <div className="py-5 leading-7 whitespace-pre-wrap break-words linkify">
+            <h1 className='font-medium border-b border-gray-200 text-2xl pb-3 mb-5'><Markup>{post?.metadata?.content}</Markup></h1>
               <div className="flex justify-between pb-4 space-x-1.5">
                 <UserProfile
                   profile={
