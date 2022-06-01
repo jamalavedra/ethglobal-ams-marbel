@@ -16,24 +16,23 @@ const Footer: FC = () => {
       </span>
 
       <span>
-        {' '}
         <a
           target="_blank"
-          className="text-blue-600"
+          className="text-blue-600 border rounded p-1 border-blue-400"
           rel="noreferrer noopener"
-          href="https://twitter.com/joalavedra"
+          href="https://twitter.com/marbelprotocol"
         >
-          @jamalavedra
+          Twitter
         </a>
       </span>
       <span>
         <a
           target="_blank"
-          className="text-blue-600"
+          className="text-blue-800 border rounded p-1 border-blue-800"
           rel="noreferrer noopener"
-          href="https://twitter.com/jamalavedra"
+          href="https://discord.gg/qZkhwUNz"
         >
-          @joalavedra
+          Discord
         </a>
       </span>
     </footer>

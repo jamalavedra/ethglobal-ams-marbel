@@ -1,6 +1,6 @@
 import { gql, useQuery } from '@apollo/client'
 import Feed from '@components/Comment/Feed'
-import { GridItemEight, GridItemFour, GridLayout } from '@components/GridLayout'
+import { GridItemEight, GridLayout } from '@components/GridLayout'
 import { Spinner } from '@components/UI/Spinner'
 import { LensterPost } from '@generated/lenstertypes'
 import { CommentFields } from '@gql/CommentFields'
@@ -14,8 +14,8 @@ import { ZERO_ADDRESS } from 'src/constants'
 import Custom404 from 'src/pages/404'
 import Custom500 from 'src/pages/500'
 import AppContext from '@components/utils/AppContext'
+import SEO from '@components/utils/SEO'
 
-import IPFSHash from './IPFSHash'
 import ForumPost from './ForumPost'
 
 export const POST_QUERY = gql`
@@ -98,6 +98,9 @@ const ViewPost: NextPage = () => {
 
   return (
     <GridLayout>
+      <SEO
+        title={`${post?.__typename} by @${post?.profile?.handle} • Marbel`}
+      />
       <GridItemEight>
         <ForumPost post={post} />
         <Feed

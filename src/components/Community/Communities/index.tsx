@@ -3,7 +3,7 @@ import { GridItemSix, GridLayout } from '@components/GridLayout'
 import { Button } from '@components/UI/Button'
 import { PageLoading } from '@components/UI/PageLoading'
 import { CommunityFields } from '@gql/CommunityFields'
-import { FireIcon, PlusIcon } from '@heroicons/react/outline'
+import { FireIcon, PlusIcon } from '@heroicons/react/solid'
 import consoleLog from '@lib/consoleLog'
 import { NextPage } from 'next'
 import React from 'react'
@@ -66,8 +66,8 @@ const Communities: NextPage = () => {
   return (
     <GridLayout>
       <GridItemSix className="mb-10">
-        <div className="py-12 mb-4 bg-white bg-hero">
-          <div className="container px-5 mx-auto max-w-screen-xl">
+        <div className="py-12 mb-4 bg-white">
+          <div className="container mx-auto max-w-screen-xl">
             <div className="flex items-stretch py-8 w-full text-center sm:py-12 sm:text-left">
               <div className="flex-1 flex-shrink-0 space-y-3">
                 <div className="text-2xl font-extrabold text-black sm:text-4xl">
@@ -77,6 +77,14 @@ const Communities: NextPage = () => {
                   Let your communities help you discover the worlds most
                   interesting sites
                 </div>
+                <a
+                  className="underline font-medium"
+                  rel="nofollow"
+                  href="https://mirror.xyz/0x6e20905567d9faecfb2D5CBAAeA1766359C95a76/N7GqM3nRh6BeUu7Dh498EK50bSJup3aTypv0JFYYbEg"
+                  target="__blank"
+                >
+                  Learn more
+                </a>
               </div>
 
               <div className="hidden flex-1 flex-shrink-0 w-full sm:block" />
@@ -94,7 +102,7 @@ const Communities: NextPage = () => {
       </GridItemSix>
       <GridItemSix>
         <div className="flex ml-5 mb-2 space-x-1.5 font-medium text-gray-700">
-          <FireIcon className="w-5 h-5 text-yellow-500" />
+          <FireIcon className="w-5 h-5 text-gray-700" />
           <div>Most Active Communities</div>
         </div>
         <List communities={data?.topCommented.items} />

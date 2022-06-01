@@ -33,11 +33,7 @@ const NewPostModal: FC<Props> = ({ post }) => {
         show={showModal}
         onClose={() => setShowModal(!showModal)}
       >
-        <NewPost
-          refetch={() => console.log('m1')}
-          type="community post"
-          post={post}
-        />
+        <NewPost setShowModal={setShowModal} hideCard post={post} />
       </Modal>
     </>
   )

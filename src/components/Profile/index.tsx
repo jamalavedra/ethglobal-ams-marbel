@@ -123,9 +123,9 @@ const ViewProfile: NextPage = () => {
   return (
     <>
       {profile?.name ? (
-        <SEO title={`${profile?.name} (@${profile?.handle}) • Lenster`} />
+        <SEO title={`${profile?.name} (@${profile?.handle}) • Marbel`} />
       ) : (
-        <SEO title={`@${profile?.handle} • Lenster`} />
+        <SEO title={`@${profile?.handle} • Marbel`} />
       )}
 
       <GridLayout className="pt-6">

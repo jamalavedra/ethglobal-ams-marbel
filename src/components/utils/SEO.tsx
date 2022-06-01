@@ -19,8 +19,8 @@ const SEO: FC<Props> = ({ title = TITLE, description = DESCRIPTION }) => {
 
       <link rel="preconnect" href="https://ik.imagekit.io" />
       <link rel="dns-prefetch" href="https://ik.imagekit.io" />
-      <link rel="preconnect" href="https://assets.lenster.xyz" />
-      <link rel="dns-prefetch" href="https://assets.lenster.xyz" />
+      <link rel="preconnect" href="https://assets.themarbel.com" />
+      <link rel="dns-prefetch" href="https://assets.themarbel.com" />
       <link rel="preconnect" href="https://ipfs.infura.io" />
       <link rel="dns-prefetch" href="https://ipfs.infura.io" />
 
@@ -31,8 +31,8 @@ const SEO: FC<Props> = ({ title = TITLE, description = DESCRIPTION }) => {
       />
       <link rel="manifest" href="/manifest.json" />
 
-      <meta property="og:url" content="https://lenster.xyz" />
-      <meta property="og:site_name" content="Lenster" />
+      <meta property="og:url" content="https://themarbel.com" />
+      <meta property="og:site_name" content="Marbel" />
       <meta property="og:title" content={title} />
       <meta property="og:description" content={description} />
       <meta property="og:image" content={DEFAULT_OG} />
@@ -40,7 +40,7 @@ const SEO: FC<Props> = ({ title = TITLE, description = DESCRIPTION }) => {
       <meta property="og:image:height" content="400" />
 
       <meta property="twitter:card" content="summary" />
-      <meta property="twitter:site" content="Lenster" />
+      <meta property="twitter:site" content="Marbel" />
       <meta property="twitter:title" content={title} />
       <meta property="twitter:description" content={description} />
       <meta property="twitter:image:src" content={DEFAULT_OG} />
@@ -52,7 +52,7 @@ const SEO: FC<Props> = ({ title = TITLE, description = DESCRIPTION }) => {
         rel="search"
         type="application/opensearchdescription+xml"
         href="/opensearch.xml"
-        title="Lenster"
+        title="Marbel"
       />
     </Head>
   )

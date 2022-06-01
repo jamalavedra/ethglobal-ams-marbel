@@ -36,13 +36,6 @@ body {
   @apply bg-gray-200 dark:bg-gray-900;
 }
 
-.bg-hero {
-  background: linear-gradient(90deg, #fff, #fff 50%, hsla(0, 0%, 100%, 0)),
-    url(https://assets.lenster.xyz/images/patterns/hero.webp);
-  background-size: cover;
-}
-
-
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }

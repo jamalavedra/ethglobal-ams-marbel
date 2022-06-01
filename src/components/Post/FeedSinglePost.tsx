@@ -55,7 +55,6 @@ const SinglePost: FC<Props> = ({ post, index = 0 }) => {
       </td>
       <td className="px-4 text-sm font-medium py-2 text-gray-900 whitespace-nowrap">
         {humanize(post?.stats?.totalAmountOfMirrors)}
-        
       </td>
       <td className="px-4 text-sm font-medium py-2 text-gray-900 whitespace-nowrap">
         {humanize(post?.stats?.totalAmountOfComments)}

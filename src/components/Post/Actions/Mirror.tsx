@@ -101,6 +101,7 @@ const Mirror: FC<Props> = ({ post }) => {
     }
   })
   const onCompleted = () => {
+    setMirroring(true)
     setCount(count + 1)
     toast.success('Post has been mirrored!')
     trackEvent('mirror')
@@ -113,7 +114,7 @@ const Mirror: FC<Props> = ({ post }) => {
     'mirrorWithSig',
     {
       onSuccess() {
-        toast.success('Post has been mirrored!')
+        onCompleted()
       },
       onError(error: any) {
         toast.error(error?.data?.message ?? error?.message)

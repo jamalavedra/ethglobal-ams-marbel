@@ -8,13 +8,12 @@ import { ErrorMessage } from '@components/UI/ErrorMessage'
 import { Spinner } from '@components/UI/Spinner'
 import AppContext from '@components/utils/AppContext'
 import Markup from '@components/Shared/Markup'
-
-import { LensterPost } from '@generated/lenstertypes'
+import trimify from '@lib/trimify'
 import {
   CreateCommentBroadcastItemResult,
   EnabledModule
 } from '@generated/types'
-import { ChatAlt2Icon, PencilAltIcon } from '@heroicons/react/outline'
+import { PencilAltIcon } from '@heroicons/react/outline'
 import consoleLog from '@lib/consoleLog'
 import {
   defaultFeeData,
@@ -22,7 +21,7 @@ import {
   FEE_DATA_TYPE,
   getModule
 } from '@lib/getModule'
-import { LensterAttachment } from '@generated/lenstertypes'
+import { LensterAttachment, LensterPost } from '@generated/lenstertypes'
 import omit from '@lib/omit'
 import splitSignature from '@lib/splitSignature'
 import uploadToIPFS from '@lib/uploadToIPFS'
@@ -50,6 +49,7 @@ import trackEvent from '@lib/trackEvent'
 import { BROADCAST_MUTATION } from '@gql/BroadcastMutation'
 import { MentionTextArea } from '@components/UI/MentionTextArea'
 import dynamic from 'next/dynamic'
+import { Dispatch } from 'react'
 
 const editProfileSchema = object({
   title: string()
@@ -98,25 +98,24 @@ const CREATE_COMMENT_TYPED_DATA_MUTATION = gql`
 `
 
 interface Props {
-  refetch: any
+  setShowModal?: Dispatch<boolean>
+  hideCard?: boolean
   post: LensterPost
-  type: 'comment' | 'community post'
 }
 
-const NewComment: FC<Props> = ({ refetch, post, type }) => {
+const NewComment: FC<Props> = ({ setShowModal, hideCard = false, post }) => {
   const [preview, setPreview] = useState<boolean>(false)
   const [postContent, setPostContent] = useState<string>('')
   const [postContentError, setPostContentError] = useState<string>('')
-  const { currentUser } = useContext(AppContext)
   const [selectedModule, setSelectedModule] =
     useState<EnabledModule>(defaultModuleData)
   const [onlyFollowers, setOnlyFollowers] = useState<boolean>(false)
   const [feeData, setFeeData] = useState<FEE_DATA_TYPE>(defaultFeeData)
   const [isUploading, setIsUploading] = useState<boolean>(false)
+  const [attachments, setAttachments] = useState<LensterAttachment[]>([])
+  const { currentUser } = useContext(AppContext)
   const { activeChain } = useNetwork()
   const { data: account } = useAccount()
-  const [attachments, setAttachments] = useState<LensterAttachment[]>([])
-
   const { isLoading: signLoading, signTypedDataAsync } = useSignTypedData({
     onError(error) {
       toast.error(error?.message)
@@ -124,6 +123,8 @@ const NewComment: FC<Props> = ({ refetch, post, type }) => {
   })
 
   const onCompleted = () => {
+    setPreview(false)
+    setPostContent('')
     setAttachments([])
     setSelectedModule(defaultModuleData)
     setFeeData(defaultFeeData)
@@ -199,6 +200,7 @@ const NewComment: FC<Props> = ({ refetch, post, type }) => {
           value: omit(typedData?.value, '__typename')
         }).then((signature) => {
           const { v, r, s } = splitSignature(signature)
+          const sig = { v, r, s, deadline: typedData.value.deadline }
           const inputStruct = {
             profileId,
             profileIdPointed,
@@ -209,12 +211,7 @@ const NewComment: FC<Props> = ({ refetch, post, type }) => {
             referenceModule,
             referenceModuleData,
             referenceModuleInitData,
-            sig: {
-              v,
-              r,
-              s,
-              deadline: typedData.value.deadline
-            }
+            sig
           }
           if (RELAY_ON) {
             broadcast({ variables: { request: { id, signature } } }).then(
@@ -230,7 +227,6 @@ const NewComment: FC<Props> = ({ refetch, post, type }) => {
         })
       },
       onError(error) {
-        console.log('createCommentTypedData', error)
         toast.error(error.message ?? ERROR_MESSAGE)
       }
     }
@@ -241,13 +237,16 @@ const NewComment: FC<Props> = ({ refetch, post, type }) => {
       toast.error(CONNECT_WALLET)
     } else if (activeChain?.id !== CHAIN_ID) {
       toast.error(WRONG_NETWORK)
+    } else if (postContent.length === 0 && attachments.length === 0) {
+      setPostContentError('Post should not be empty!')
     } else {
       setIsUploading(true)
+      setPostContentError('')
       const { path } = await uploadToIPFS({
         version: '1.0.0',
         metadata_id: uuidv4(),
         description: description,
-        content: title,
+        content: trimify(title),
         external_url: null,
         image: null,
         imageMimeType: null,
@@ -256,13 +255,13 @@ const NewComment: FC<Props> = ({ refetch, post, type }) => {
           {
             traitType: 'string',
             key: 'type',
-            value: type
+            value: 'community post'
           }
         ],
         media: attachments,
         appId: 'Marbel'
       }).finally(() => setIsUploading(false))
-      console.log('before createCommentTypedData')
+
       createCommentTypedData({
         variables: {
           request: {
@@ -309,7 +308,7 @@ const NewComment: FC<Props> = ({ refetch, post, type }) => {
             />
 
             {preview ? (
-              <div className="pb-3 mb-2 border-b dark:border-b-gray-700/80">
+              <div className="pb-3 mb-2 border-b linkify dark:border-b-gray-700/80">
                 <Markup>{postContent}</Markup>
               </div>
             ) : (
@@ -332,8 +331,8 @@ const NewComment: FC<Props> = ({ refetch, post, type }) => {
                 {data?.hash ?? broadcastData?.broadcast?.txHash ? (
                   <div className="py-2">
                     <PubIndexStatus
-                      refetch={refetch}
-                      type={type === 'comment' ? 'Comment' : 'Entry'}
+                      setShowModal={setShowModal}
+                      type="community post"
                       txHash={
                         data?.hash
                           ? data?.hash
@@ -361,23 +360,19 @@ const NewComment: FC<Props> = ({ refetch, post, type }) => {
                       broadcastLoading ||
                       writeLoading ? (
                         <Spinner size="xs" />
-                      ) : type === 'community post' ? (
-                        <PencilAltIcon className="w-4 h-4" />
                       ) : (
-                        <ChatAlt2Icon className="w-4 h-4" />
+                        <PencilAltIcon className="w-4 h-4" />
                       )
                     }
                   >
                     {isUploading
                       ? 'Uploading to IPFS'
                       : typedDataLoading
-                      ? `Generating ${type === 'comment' ? 'Comment' : 'Entry'}`
+                      ? `Generating Entry`
                       : signLoading
                       ? 'Sign'
                       : writeLoading || broadcastLoading
                       ? 'Send'
-                      : type === 'comment'
-                      ? 'Comment'
                       : 'Submit'}
                   </Button>
                 )}

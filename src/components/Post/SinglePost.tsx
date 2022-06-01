@@ -16,6 +16,11 @@ import { useContext } from 'react'
 import Delete from './Actions/Delete'
 import AppContext from '@components/utils/AppContext'
 import Comment from './Actions/Comment'
+import { LinkIcon } from '@heroicons/react/solid'
+import { CopyToClipboard } from 'react-copy-to-clipboard'
+import toast from 'react-hot-toast'
+import { PUBLIC_URL } from 'src/constants'
+import { Tooltip } from '@components/UI/Tooltip'
 
 interface Props {
   post: LensterPost
@@ -53,6 +58,18 @@ const SinglePost: FC<Props> = ({
             </div>
 
             <div className="flex gap-8 items-center">
+              <Tooltip placement="top" content="Copy link to post">
+                <CopyToClipboard
+                  text={`${PUBLIC_URL}/posts/${post?.id ?? post?.pubId}`}
+                  onCopy={() => {
+                    toast.success('Copied to clipboard!')
+                  }}
+                >
+                  <div className="cursor-pointer flex items-center">
+                    <LinkIcon className="w-4 h-4 text-gray-400 hover:text-gray-500" />
+                  </div>
+                </CopyToClipboard>
+              </Tooltip>
               <Mirror post={post} />
               <Comment post={post} />
             </div>

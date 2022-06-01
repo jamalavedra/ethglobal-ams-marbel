@@ -30,7 +30,8 @@ import {
   LENSHUB_PROXY,
   WRONG_NETWORK
 } from 'src/constants'
-import Custom403 from 'src/pages/403'
+import Custom404 from 'src/pages/404'
+import SEO from '@components/utils/SEO'
 import { v4 as uuidv4 } from 'uuid'
 import {
   useAccount,
@@ -253,10 +254,11 @@ const Create: NextPage = () => {
     }
   }
 
-  if (!currentUser) return <Custom403 />
+  if (!currentUser) return <Custom404 />
 
   return (
     <GridLayout>
+      <SEO title="Create Community • Marbel" />
       <GridItemFour>
         <SettingsHelper
           heading="Create Community"

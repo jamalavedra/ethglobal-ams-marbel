@@ -17,8 +17,8 @@ export async function middleware(req: NextRequest) {
 
     if (data?.success) {
       const title = profile?.name
-        ? `${profile?.name} (@${profile?.handle}) • Lenster`
-        : `@${profile?.handle} • Lenster`
+        ? `${profile?.name} (@${profile?.handle}) • Marbel`
+        : `@${profile?.handle} • Marbel`
       const description = profile?.bio ?? ''
       const image = profile
         ? `https://ik.imagekit.io/lensterimg/tr:n-avatar/${getIPFSLink(
@@ -28,7 +28,7 @@ export async function middleware(req: NextRequest) {
               profile?.picture?.uri ??
               `https://avatar.tobi.sh/${profile?.ownedBy}_${profile?.handle}.png`
           )}`
-        : 'https://assets.lenster.xyz/images/og/logo.jpeg'
+        : 'https://assets.themarbel.com/images/og/logo.jpeg'
 
       return new Response(generateMeta(title, description, image), {
         headers: {

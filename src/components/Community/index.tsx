@@ -11,7 +11,7 @@ import Custom500 from 'src/pages/500'
 import { Community } from '@generated/lenstertypes'
 import FeedType from './FeedType'
 import React, { useState } from 'react'
-
+import SEO from '@components/utils/SEO'
 import Details from './Details'
 
 const COMMUNITY_QUERY = gql`
@@ -62,24 +62,24 @@ export default function ViewCommunity({ community }: { community: Community }) {
     return <Custom404 />
 
   return (
-    <>
-      <GridLayout>
-        <GridItemTwelve>
-          <div className="flex w-full m-auto h-auto justify-center items-center">
-            <Details community={data.publication} />
-          </div>
-        </GridItemTwelve>
+    <GridLayout>
+      <SEO title={`${data?.publication?.metadata?.name} • Marbel`} />
 
-        <GridItemTwelve className="space-y-5">
-          <FeedType
-            setFeedType={setFeedType}
-            feedType={feedType}
-            post={data.publication}
-          />
-          {/* <Feed post={data.publication} type="community post" /> */}
-          <Feed post={data.publication} sortCriteria={feedType} />
-        </GridItemTwelve>
-      </GridLayout>
-    </>
+      <GridItemTwelve>
+        <div className="flex w-full m-auto h-auto justify-center items-center">
+          <Details community={data.publication} />
+        </div>
+      </GridItemTwelve>
+
+      <GridItemTwelve className="space-y-5">
+        <FeedType
+          setFeedType={setFeedType}
+          feedType={feedType}
+          post={data.publication}
+        />
+        {/* <Feed post={data.publication} type="community post" /> */}
+        <Feed post={data.publication} sortCriteria={feedType} />
+      </GridItemTwelve>
+    </GridLayout>
   )
 }

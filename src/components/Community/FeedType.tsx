@@ -1,8 +1,9 @@
+import AppContext from '@components/utils/AppContext'
 import { TrendingUpIcon } from '@heroicons/react/outline'
 import { ClockIcon, FireIcon } from '@heroicons/react/solid'
 import trackEvent from '@lib/trackEvent'
 import clsx from 'clsx'
-import React, { Dispatch, FC, ReactChild } from 'react'
+import React, { Dispatch, FC, ReactChild, useContext } from 'react'
 import dynamic from 'next/dynamic'
 import { LensterPost } from '@generated/lenstertypes'
 
@@ -21,6 +22,8 @@ const FeedType: FC<Props> = ({ setFeedType, feedType, post }) => {
     type: string
     count?: number
   }
+
+  const { currentUser } = useContext(AppContext)
 
   const FeedLink: FC<FeedLinkProps> = ({ name, icon, type }) => (
     <button
@@ -62,7 +65,7 @@ const FeedType: FC<Props> = ({ setFeedType, feedType, post }) => {
           type="LATEST"
         />
       </div>
-      <NewPostModal post={post} />
+      {currentUser && <NewPostModal post={post} />}
     </div>
   )
 }
