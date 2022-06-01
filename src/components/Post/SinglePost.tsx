@@ -1,6 +1,5 @@
 // import Attachments from '@components/Shared/Attachments'
 // import IFramely from '@components/Shared/IFramely'
-import Author from '@components/Shared/Author'
 import { Card, CardBody } from '@components/UI/Card'
 import { LensterPost } from '@generated/lenstertypes'
 // import getURLFromPublication from '@lib/getURLFromPublication'
@@ -9,7 +8,7 @@ import Link from 'next/link'
 import React, { FC } from 'react'
 import humanize from '@lib/humanize'
 
-import PostBody from './PostBody'
+import PostBodyComment from './PostBodyComment'
 import PostType from './Type'
 import Mirror from './Actions/Mirror'
 import { useContext } from 'react'
@@ -24,17 +23,10 @@ import { Tooltip } from '@components/UI/Tooltip'
 
 interface Props {
   post: LensterPost
-  index?: number
-  postPage?: boolean
   hideType?: boolean
 }
 
-const SinglePost: FC<Props> = ({
-  post,
-  index = 0,
-  postPage = false,
-  hideType = false
-}) => {
+const SinglePost: FC<Props> = ({ post, hideType = false }) => {
   const { currentUser } = useContext(AppContext)
 
   return (
@@ -43,7 +35,7 @@ const SinglePost: FC<Props> = ({
         <PostType post={post} hideType={hideType} />
 
         <div className="w-full pb-4">
-          <PostBody post={post} hideType={false} />
+          <PostBodyComment post={post} hideType={false} />
           <div className="flex pl-14 py-2 w-full">
             <div className="grow">
               <Link href={`/posts/${post?.id}`}>

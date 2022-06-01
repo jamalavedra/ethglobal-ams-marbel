@@ -7,8 +7,7 @@ import dayjs from 'dayjs'
 
 import React, { FC } from 'react'
 import humanize from '@lib/humanize'
-
-import PostBody from './PostBody'
+import PostBodyComment from './PostBodyComment'
 import PostType from './Type'
 import Mirror from './Actions/Mirror'
 import { useContext } from 'react'
@@ -34,7 +33,7 @@ const ForumPost: FC<Props> = ({ post }) => {
         <PostType post={post} hideType={true} />
 
         <div className="w-full pb-4">
-          <PostBody post={post} hideType={false} />
+          <PostBodyComment post={post} hideType={true} />
           <div className="flex pl-14 py-2 w-full">
             <div className="grow">
               {currentUser?.id === post?.profile?.id && <Delete post={post} />}

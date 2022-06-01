@@ -176,7 +176,6 @@ const Feed: FC<Props> = ({
               (post: LensterPost, index: number) => (
                 <SinglePost
                   key={`${post?.id}_${index}`}
-                  index={index}
                   post={post}
                   hideType={comments}
                 />

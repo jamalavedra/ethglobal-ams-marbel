@@ -25,9 +25,7 @@ const COMMUNITY_QUERY = gql`
 `
 
 export const POST_QUERY = gql`
-  query Post(
-    $request: PublicationQueryRequest!
-  ) {
+  query Post($request: PublicationQueryRequest!) {
     publication(request: $request) {
       ... on Post {
         ...PostFields
@@ -75,12 +73,11 @@ const Navbar: FC = () => {
         title: data.publication?.metadata?.name
       })
     },
-    skip: !id|| pathname.includes('posts')
+    skip: !id || pathname.includes('posts')
   })
 
   useQuery(POST_QUERY, {
-
-      variables: { request: { publicationId: id } },
+    variables: { request: { publicationId: id } },
 
     onCompleted(data) {
       setPageInfo({

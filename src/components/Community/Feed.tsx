@@ -115,7 +115,7 @@ const Feed: FC<Props> = ({ post, sortCriteria }) => {
   return (
     <>
       {loading && (
-        <div className="flex flex-grow justify-center items-center h-screen animate-pulse">
+        <div className="flex flex-grow justify-center items-center animate-pulse">
           <span className="flex justify-center p-5">
             <Spinner size="sm" />
           </span>

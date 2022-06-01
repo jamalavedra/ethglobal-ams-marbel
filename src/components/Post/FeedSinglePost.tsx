@@ -11,11 +11,10 @@ import Link from 'next/link'
 import React, { FC } from 'react'
 import humanize from '@lib/humanize'
 
-import PostBody from './PostBody'
-
 import { useContext } from 'react'
 import Delete from './Actions/Delete'
 import AppContext from '@components/utils/AppContext'
+import PostBodyForum from './PostBodyForum'
 
 interface Props {
   post: LensterPost
@@ -29,7 +28,7 @@ const SinglePost: FC<Props> = ({ post, index = 0 }) => {
     <tr>
       <td className="px-4 py-2 font-medium text-gray-900 whitespace-nowrap">
         <div>
-          <PostBody post={post} hideType={true} />
+          <PostBodyForum post={post} />
           <div className={`flex  py-2`}>
             <div>
               <Author
