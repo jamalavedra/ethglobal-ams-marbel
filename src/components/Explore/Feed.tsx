@@ -108,7 +108,6 @@ const Feed: FC<Props> = ({ feedType = 'TOP_COMMENTED' }) => {
               <SinglePost
                 key={`${post?.id}_${index}`}
                 post={post}
-                index={index}
               />
             ))}
           </div>
