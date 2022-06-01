@@ -45,8 +45,7 @@ const PostBodyComment: FC<Props> = ({ post, hideType = true }) => {
                     : post?.profile
                 }
               />
-              {console.log(post?.createdAt)}
-              {post?.createdAt && (
+              {new Date(post?.createdAt) && (
                 <Link href={`/posts/${post?.id}`}>
                   <a
                     href={`/posts/${post?.id}`}
