@@ -131,23 +131,13 @@ const Details: FC<Props> = ({ profile }) => {
               {getAttribute(profile?.attributes, 'twitter') && (
                 <MetaDetails
                   icon={
-                    resolvedTheme === 'dark' ? (
-                      <img
-                        src={`${STATIC_ASSETS}/brands/twitter-light.svg`}
-                        className="w-4 h-4"
-                        height={16}
-                        width={16}
-                        alt="Twitter Logo"
-                      />
-                    ) : (
-                      <img
-                        src={`${STATIC_ASSETS}/brands/twitter-dark.svg`}
-                        className="w-4 h-4"
-                        height={16}
-                        width={16}
-                        alt="Twitter Logo"
-                      />
-                    )
+                    <img
+                      src={`${STATIC_ASSETS}/brands/twitter-dark.svg`}
+                      className="w-4 h-4"
+                      height={16}
+                      width={16}
+                      alt="Twitter Logo"
+                    />
                   }
                 >
                   <a

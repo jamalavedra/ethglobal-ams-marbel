@@ -90,6 +90,7 @@ const Feed: FC<Props> = ({ post, sortCriteria }) => {
 
   const links = useMemo(() => {
     if (!data) return
+    console.log(data)
     return data.publications.items.sort((a: any, b: any) => {
       if (sortCriteria == 'LATEST')
         return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()

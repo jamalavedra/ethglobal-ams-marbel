@@ -9,12 +9,12 @@ import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 interface Props {
   post: LensterPost
-  hideType: boolean
+  hideType?: boolean
 }
 
 dayjs.extend(relativeTime)
 
-const PostBody: FC<Props> = ({ post, hideType }) => {
+const PostBody: FC<Props> = ({ post, hideType = true }) => {
   const { pathname } = useRouter()
   const [showMore, setShowMore] = useState<boolean>(
     post?.metadata?.content?.length > 250
