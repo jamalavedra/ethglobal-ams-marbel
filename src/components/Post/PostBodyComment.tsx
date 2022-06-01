@@ -45,14 +45,17 @@ const PostBodyComment: FC<Props> = ({ post, hideType = true }) => {
                     : post?.profile
                 }
               />
-              <Link href={`/posts/${post?.id}`}>
-                <a
-                  href={`/posts/${post?.id}`}
-                  className="text-sm text-gray-500"
-                >
-                  {dayjs(new Date(post?.createdAt)).fromNow()}
-                </a>
-              </Link>
+              {console.log(post?.createdAt)}
+              {post?.createdAt && (
+                <Link href={`/posts/${post?.id}`}>
+                  <a
+                    href={`/posts/${post?.id}`}
+                    className="text-sm text-gray-500"
+                  >
+                    {dayjs(new Date(post?.createdAt)).fromNow()}
+                  </a>
+                </Link>
+              )}
             </div>
             <div className="ml-14">
               <Markup>{post?.metadata?.description}</Markup>

@@ -141,7 +141,9 @@ const ViewProfile: NextPage = () => {
                 type="COMMENT"
                 count={profile?.stats?.totalComments}
               />
-              <Feed profile={profile} type={'COMMENT'} />
+              <div className="p-5 border rounded border-gray-200">
+                <Feed profile={profile} type={'COMMENT'} />
+              </div>
             </GridItemSix>
             <GridItemSix>
               <FeedLink
@@ -150,10 +152,14 @@ const ViewProfile: NextPage = () => {
                 type="COMMENT"
                 count={profile?.stats?.totalMirrors}
               />
-              <Feed profile={profile} type={'MIRROR'} />
+              <div className="p-5 border rounded border-gray-200">
+                <Feed profile={profile} type={'MIRROR'} />
+              </div>
             </GridItemSix>
           </GridLayout>
-
+          <p className="border-b border-gray-200 pb-2 mb-4 font-medium text-2xl">
+            NFTs
+          </p>
           <NFTFeed profile={profile} />
         </GridItemTwelve>
       </GridLayout>
