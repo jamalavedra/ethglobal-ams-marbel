@@ -121,7 +121,7 @@ const Navbar: FC = () => {
                       <p className="pt-2 text-2xl font-medium">{'Marbel'}</p>
                     </a>
                   </Link>
-                ) : pageInfo.id ? (
+                ) : pageInfo?.id ? (
                   <Link href={'/communities/' + pageInfo.id}>
                     <a className="flex cursor-pointer">
                       <img
