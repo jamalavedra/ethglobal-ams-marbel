@@ -27,14 +27,16 @@ const ThreadBody: FC<Props> = ({ post }) => {
               : post?.profile
           }
         />
-        <Link href={`/posts/${post?.pubId ?? post?.id}`}>
-          <a
-            href={`/posts/${post?.pubId ?? post?.id}`}
-            className="text-sm text-gray-500"
-          >
-            {dayjs(new Date(post?.createdAt)).fromNow()}
-          </a>
-        </Link>
+        {post?.createdAt && (
+          <Link href={`/posts/${post?.pubId ?? post?.id}`}>
+            <a
+              href={`/posts/${post?.pubId ?? post?.id}`}
+              className="text-sm text-gray-500"
+            >
+              {dayjs(new Date(post?.createdAt)).fromNow()}
+            </a>
+          </Link>
+        )}
       </div>
       <div className="flex">
         <div className="mr-8 ml-5 bg-gray-300 border-gray-300 dark:bg-gray-700 dark:border-gray-700 border-[0.8px] -my-[4px]" />

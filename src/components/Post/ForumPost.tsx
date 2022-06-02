@@ -26,14 +26,18 @@ interface Props {
 
 const ForumPost: FC<Props> = ({ post }) => {
   const { currentUser } = useContext(AppContext)
+  const postType = post?.metadata?.attributes[0]?.value
 
   return (
     <Card className="border-b border-gray-200">
       <CardBody>
-        <PostType post={post} hideType={true} />
+        <PostType post={post} hideType={false} />
 
         <div className="w-full pb-4">
-          <PostBodyComment post={post} hideType={true} />
+          <PostBodyComment
+            post={post}
+            hideType={postType === 'community post' ? true : false}
+          />
           <div className="flex pl-14 py-2 w-full">
             <div className="grow">
               {currentUser?.id === post?.profile?.id && <Delete post={post} />}
