@@ -51,12 +51,14 @@ const Communities: NextPage = () => {
         limit: 8
       }
     },
-    onCompleted() {
+    fetchPolicy: 'no-cache',
+    onCompleted(data) {
       consoleLog(
         'Query',
         '#8b5cf6',
         `Fetched 10 TOP_COMMENTED and TOP_COLLECTED communities`
       )
+      console.log(data)
     }
   })
 
@@ -74,8 +76,7 @@ const Communities: NextPage = () => {
                   Welcome to Marbel 👋
                 </div>
                 <div className="leading-7 text-gray-700">
-                  Let your communities help you discover the worlds most
-                  interesting sites
+                 A decentralized Discourse based on Lens
                 </div>
                 <a
                   className="underline font-medium"

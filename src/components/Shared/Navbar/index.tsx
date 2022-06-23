@@ -56,7 +56,6 @@ export const POST_QUERY = gql`
 `
 
 const Navbar: FC = () => {
-  const router = useRouter()
   const [pageInfo, setPageInfo] = React.useState<any>()
   const {
     pathname,
@@ -84,13 +83,14 @@ const Navbar: FC = () => {
     variables: { request: { publicationId: id } },
 
     onCompleted(data) {
+      if(data.publication.commentOn){
       setPageInfo({
-        id: data.publication.commentOn.pubId,
+        id: data.publication.commentOn ? data.publication.commentOn.pubId:null,
         url: data.publication?.metadata?.cover?.original?.url
           ? data.publication?.metadata?.cover?.original?.url
           : `https://avatar.tobi.sh/${data.publication?.id}.png`,
         title: data.publication.commentOn.metadata?.name
-      })
+      })}
     },
     skip: !id || pathname.includes('communities')
   })
